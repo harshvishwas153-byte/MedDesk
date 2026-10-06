@@ -209,13 +209,18 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
     }, 0);
   };
 
+<<<<<<< HEAD
   const handleSendPrescriptionOrReport = async (e: React.FormEvent) => {
+=======
+  const handleSendPrescriptionOrReport = (e: React.FormEvent) => {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     e.preventDefault();
     if (!activeConsultation) return;
 
     if (docAttachmentType === 'prescription') {
       if (!rxDiagnosis.trim()) return;
 
+<<<<<<< HEAD
       try {
         await MedicareApiClient.issuePrescriptionFromConsultation({
           consultationId: activeConsultation.id,
@@ -276,6 +281,58 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
         console.error(err);
         return;
       }
+=======
+      MedicareApiClient.issuePrescriptionFromConsultation({
+        consultationId: activeConsultation.id,
+        doctorId: currentUser.id,
+        doctorName: currentUser.name,
+        doctorAvatar: currentUser.avatar,
+        patientId: activeConsultation.patientId,
+        diagnosis: rxDiagnosis.trim(),
+        medicines: [
+          {
+            name: rxMedName,
+            dosage: rxDosage,
+            duration: rxDuration,
+            instruction: rxInstruction,
+          },
+        ],
+        notes: rxNotes.trim(),
+      });
+    } else {
+      // General Report / Clinical Summary
+      const record = MedicareApiClient.uploadRecord({
+        patientId: activeConsultation.patientId,
+        title: rxDiagnosis || 'Doctor Clinical Advice',
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        category: 'Consultations',
+        fileType: 'PDF',
+        fileSize: '1.2 MB',
+        doctorName: currentUser.name,
+        facility: 'MedDesk Clinic',
+        notes: rxNotes || 'Doctor shared clinical summary',
+      });
+
+      MedicareApiClient.sendConsultationMessage({
+        consultationId: activeConsultation.id,
+        senderId: currentUser.id,
+        senderRole: 'DOCTOR',
+        senderName: currentUser.name,
+        senderAvatar: currentUser.avatar,
+        text: `📄 Attached Clinical Summary: ${rxDiagnosis || 'Clinical Advice'}`,
+        attachments: [
+          {
+            type: 'report',
+            title: rxDiagnosis || 'Doctor Clinical Summary',
+            fileName: 'Clinical_Summary.pdf',
+            fileType: 'PDF',
+            fileSize: '1.2 MB',
+            recordId: record.id,
+            notes: rxNotes,
+          },
+        ],
+      });
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     }
 
     setShowSendReportModal(false);

@@ -199,13 +199,21 @@ export class MedicareApiClient {
     return getStored<User[]>(STORAGE_KEYS.USERS, INITIAL_USERS);
   }
 
+<<<<<<< HEAD
   static async registerUser(data: {
+=======
+  static registerUser(data: {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     name: string;
     email: string;
     role: UserRole;
     phone?: string;
     avatar?: string;
+<<<<<<< HEAD
   }): Promise<User> {
+=======
+  }): User {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     const users = this.getUsers();
     const existing = users.find((u) => u.email.toLowerCase() === data.email.toLowerCase());
     if (existing) {
@@ -235,6 +243,7 @@ export class MedicareApiClient {
       status: 'Active',
     };
 
+<<<<<<< HEAD
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -261,6 +270,8 @@ export class MedicareApiClient {
     }
 
     // Fallback
+=======
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     const updated = [newUser, ...users];
     setStored(STORAGE_KEYS.USERS, updated);
     this.setCurrentUser(newUser);
@@ -783,10 +794,13 @@ export class MedicareApiClient {
   }
 
   static getAppointmentsByPatient(patientId: string): Appointment[] {
+<<<<<<< HEAD
     // Call GET on Servlet endpoint to show active traffic
     fetch(`/api/appointments?patientId=${patientId}`).catch((err) =>
       console.warn('Servlet sync warning:', err)
     );
+=======
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     return this.getAppointments().filter((a) => a.patientId === patientId);
   }
 
@@ -794,14 +808,22 @@ export class MedicareApiClient {
     return this.getAppointments().filter((a) => a.doctorId === doctorId);
   }
 
+<<<<<<< HEAD
   static async bookAppointment(data: {
+=======
+  static bookAppointment(data: {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     doctorId: string;
     patientId: string;
     patientName: string;
     date: string;
     time: string;
     reason: string;
+<<<<<<< HEAD
   }): Promise<Appointment> {
+=======
+  }): Appointment {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     const doctors = this.getDoctors();
     const doctor = doctors.find((d) => d.id === data.doctorId) || doctors[0];
 
@@ -846,6 +868,7 @@ export class MedicareApiClient {
       fee: doctor.consultationFee,
     };
 
+<<<<<<< HEAD
     try {
       const response = await fetch('/api/appointments', {
         method: 'POST',
@@ -891,6 +914,8 @@ export class MedicareApiClient {
     }
 
     // Fallback
+=======
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     const updated = [newAppointment, ...current];
     setStored(STORAGE_KEYS.APPOINTMENTS, updated);
 
@@ -945,23 +970,31 @@ export class MedicareApiClient {
 
   // Medical Records API (`/api/v1/records`)
   static getRecords(patientId?: string): MedicalRecord[] {
+<<<<<<< HEAD
     if (patientId) {
       // Call GET on Servlet endpoint to show active traffic
       fetch(`/api/records?patientId=${patientId}`).catch((err) =>
         console.warn('Servlet sync warning:', err)
       );
     }
+=======
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     const all = getStored<MedicalRecord[]>(STORAGE_KEYS.RECORDS, INITIAL_RECORDS);
     if (!patientId) return all;
     return all.filter((r) => r.patientId === patientId);
   }
 
+<<<<<<< HEAD
   static async uploadRecord(record: Omit<MedicalRecord, 'id'>): Promise<MedicalRecord> {
+=======
+  static uploadRecord(record: Omit<MedicalRecord, 'id'>): MedicalRecord {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     const newRecord: MedicalRecord = {
       ...record,
       id: `rec-${Date.now()}`,
     };
     const current = this.getRecords();
+<<<<<<< HEAD
 
     try {
       const response = await fetch('/api/records', {
@@ -997,6 +1030,8 @@ export class MedicareApiClient {
     }
 
     // Fallback
+=======
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     const updated = [newRecord, ...current];
     setStored(STORAGE_KEYS.RECORDS, updated);
 
@@ -1542,7 +1577,11 @@ export class MedicareApiClient {
     notifyListeners();
   }
 
+<<<<<<< HEAD
   static async issuePrescriptionFromConsultation(params: {
+=======
+  static issuePrescriptionFromConsultation(params: {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     consultationId: string;
     doctorId: string;
     doctorName: string;
@@ -1552,10 +1591,17 @@ export class MedicareApiClient {
     medicines: { name: string; dosage: string; duration: string; instruction: string }[];
     notes: string;
     recommendedTests?: string[];
+<<<<<<< HEAD
   }): Promise<MedicalRecord> {
     // 1. Create a medical record in the patient's records vault
     const medSummary = params.medicines.map((m) => `${m.name} (${m.dosage}) for ${m.duration}`).join(', ');
     const record = await this.uploadRecord({
+=======
+  }): MedicalRecord {
+    // 1. Create a medical record in the patient's records vault
+    const medSummary = params.medicines.map((m) => `${m.name} (${m.dosage}) for ${m.duration}`).join(', ');
+    const record = this.uploadRecord({
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
       patientId: params.patientId,
       title: `Prescription - ${params.doctorName}`,
       date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),

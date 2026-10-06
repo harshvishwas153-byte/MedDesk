@@ -315,7 +315,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   // Public Sign Up Handler (strictly Patients only)
+<<<<<<< HEAD
   const handleFormSignup = async (e: React.FormEvent) => {
+=======
+  const handleFormSignup = (e: React.FormEvent) => {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     e.preventDefault();
     setError('');
     if (!signupName.trim()) {
@@ -344,7 +348,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     }
 
     try {
+<<<<<<< HEAD
       const newUser = await MedicareApiClient.registerUser({
+=======
+      const newUser = MedicareApiClient.registerUser({
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
         name: signupName.trim(),
         email: signupEmail.trim(),
         role: 'PATIENT', // Always PATIENT for public signups to prevent false doctors

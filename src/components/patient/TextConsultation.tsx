@@ -214,7 +214,11 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
     }
   };
 
+<<<<<<< HEAD
   const handleSendReport = async (e: React.FormEvent) => {
+=======
+  const handleSendReport = (e: React.FormEvent) => {
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     e.preventDefault();
     if (!activeConsultation) return;
 
@@ -236,6 +240,7 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
     } else {
       if (!customReportTitle.trim()) return;
 
+<<<<<<< HEAD
       try {
         // Save as new medical record in patient's vault
         const newRec = await MedicareApiClient.uploadRecord({
@@ -263,6 +268,30 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
         console.error(err);
         return;
       }
+=======
+      // Save as new medical record in patient's vault
+      const newRec = MedicareApiClient.uploadRecord({
+        patientId: currentUser.id,
+        title: customReportTitle.trim(),
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        category: customReportCategory,
+        fileType: 'PDF',
+        fileSize: '2.1 MB',
+        doctorName: activeConsultation.doctorName,
+        facility: activeConsultation.hospitalName || 'MedDesk Diagnostic Center',
+        notes: reportNote || 'Uploaded via Doctor-Patient Live Chat',
+      });
+
+      attachment = {
+        type: 'report',
+        title: newRec.title,
+        fileName: `${newRec.title.replace(/\s+/g, '_')}.pdf`,
+        fileType: 'PDF',
+        fileSize: '2.1 MB',
+        recordId: newRec.id,
+        notes: reportNote,
+      };
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
     }
 
     const messageText = reportNote.trim()

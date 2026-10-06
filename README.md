@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏥 MedDesk — Smart OPD Patient Care & Clinic Management System
 
 MedDesk is a modern, high-fidelity, and full-featured OPD patient care and clinical queue management platform. It facilitates a real-time, paperless healthcare flow between patients, doctors, and hospital administrators. Powered by a persistent Firestore Cloud Database, it ensures instant state synchronization across all modules.
@@ -111,3 +112,25 @@ npm run build
 
 ## 🤝 Contributing
 Contributions are welcome! Feel free to open an Issue or submit a Pull Request to help improve MedDesk.
+=======
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
+
+# Run and deploy your AI Studio app
+
+This contains everything you need to run your app locally.
+
+View your app in AI Studio: https://ai.studio/apps/c0faa47a-2030-4332-a20f-ff61a06c29af
+
+## Run Locally
+
+**Prerequisites:**  Node.js
+
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c

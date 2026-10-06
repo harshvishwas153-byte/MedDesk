@@ -60,6 +60,7 @@ public class AppointmentServiceTest {
         Assert.assertTrue("Doctor display name must reflect specialty",
                 sampleDoctor.getRoleDisplayName().contains("Cardiology"));
     }
+<<<<<<< HEAD
 
     @Test
     public void testAppointmentModelAccessors() {
@@ -101,4 +102,6 @@ public class AppointmentServiceTest {
             Assert.assertEquals("Test medicare error message", e.getMessage());
         }
     }
+=======
+>>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
 }
