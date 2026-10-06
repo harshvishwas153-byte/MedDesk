@@ -1,0 +1,6 @@
+{
+  "name": "MediCare+ Healthcare Portal",
+  "description": "Full-suite hospital and clinic management web application with Patient, Doctor, and Admin dashboards, appointment booking, medical history, and Java Spring Boot backend.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

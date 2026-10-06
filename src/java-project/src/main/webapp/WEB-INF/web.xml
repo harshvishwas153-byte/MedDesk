@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <display-name>MediCare+ Hospital Management System</display-name>
+    <description>
+        Java Web-Based Hospital Portal matching Galgotias University Rubric 2.
+    </description>
+
+    <!-- Session Management (Review 1: Servlets & Web Integration) -->
+    <session-config>
+        <session-timeout>30</session-timeout> <!-- 30 Minutes Session Inactivity Timeout -->
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>false</secure> <!-- Set true in production HTTPS -->
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
+    <!-- 1. Authentication Filter -->
+    <filter>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>com.medicare.servlet.AuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/api/appointments/*</url-pattern>
+        <url-pattern>/api/records/*</url-pattern>
+        <url-pattern>/api/slip/*</url-pattern>
+    </filter-mapping>
+
+    <!-- 2. Auth Servlet (Login / Register / Logout / Session Check) -->
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>com.medicare.servlet.AuthServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/api/auth/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- 3. Appointment Servlet (Booking / Listing / Cancellation with JDBC Transactions) -->
+    <servlet>
+        <servlet-name>AppointmentServlet</servlet-name>
+        <servlet-class>com.medicare.servlet.AppointmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AppointmentServlet</servlet-name>
+        <url-pattern>/api/appointments/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- 4. Medical Consultation Slip Servlet (PDF Stream / HTML Receipt) -->
+    <servlet>
+        <servlet-name>MedicalSlipServlet</servlet-name>
+        <servlet-class>com.medicare.servlet.MedicalSlipServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MedicalSlipServlet</servlet-name>
+        <url-pattern>/api/slip/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- 5. Medical Records Vault Servlet (EHR CRUD) -->
+    <servlet>
+        <servlet-name>MedicalRecordServlet</servlet-name>
+        <servlet-class>com.medicare.servlet.MedicalRecordServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MedicalRecordServlet</servlet-name>
+        <url-pattern>/api/records/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+</web-app>
