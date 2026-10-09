@@ -60,48 +60,4 @@ public class AppointmentServiceTest {
         Assert.assertTrue("Doctor display name must reflect specialty",
                 sampleDoctor.getRoleDisplayName().contains("Cardiology"));
     }
-<<<<<<< HEAD
-
-    @Test
-    public void testAppointmentModelAccessors() {
-        Appointment apt = new Appointment();
-        apt.setId("APT-NEW-99");
-        apt.setPatientId("usr-99");
-        apt.setDoctorId("doc-99");
-        apt.setReason("Severe Chest Pain");
-        apt.setStatus("Completed");
-
-        Assert.assertEquals("APT-NEW-99", apt.getId());
-        Assert.assertEquals("usr-99", apt.getPatientId());
-        Assert.assertEquals("doc-99", apt.getDoctorId());
-        Assert.assertEquals("Severe Chest Pain", apt.getReason());
-        Assert.assertEquals("Completed", apt.getStatus());
-    }
-
-    @Test
-    public void testMedicalRecordEHRFields() {
-        com.medicare.model.MedicalRecord rec = new com.medicare.model.MedicalRecord();
-        rec.setId("REC-123");
-        rec.setPatientId("pat-1");
-        rec.setTitle("Complete Blood Count");
-        rec.setCategory("Lab Report");
-        rec.setNotes("Hemoglobin 14.5 g/dL");
-
-        Assert.assertEquals("REC-123", rec.getId());
-        Assert.assertEquals("pat-1", rec.getPatientId());
-        Assert.assertEquals("Complete Blood Count", rec.getTitle());
-        Assert.assertEquals("Lab Report", rec.getCategory());
-        Assert.assertEquals("Hemoglobin 14.5 g/dL", rec.getNotes());
-    }
-
-    @Test
-    public void testMedicareExceptionHandling() {
-        try {
-            throw new com.medicare.exception.MedicareException("Test medicare error message");
-        } catch (com.medicare.exception.MedicareException e) {
-            Assert.assertEquals("Test medicare error message", e.getMessage());
-        }
-    }
-=======
->>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
 }

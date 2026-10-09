@@ -51,7 +51,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
     generateMedicalRecordPdf(rec, currentUser);
   };
 
-<<<<<<< HEAD
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle) return;
@@ -81,33 +80,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
     } catch (err) {
       console.error(err);
     }
-=======
-  const handleUploadSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle) return;
-
-    const newRec = MedicareApiClient.uploadRecord({
-      patientId: currentUser.id,
-      title: newTitle,
-      date: new Date().toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }),
-      category: newCategory,
-      fileType: 'PDF',
-      fileSize: '1.4 MB',
-      doctorName: newDoctorName,
-      facility: 'City Care Hospital Labs',
-      notes: newNotes || 'Routine clinical report uploaded by patient.',
-    });
-
-    setRecords([newRec, ...records]);
-    setShowUploadModal(false);
-    setNewTitle('');
-    setNewNotes('');
-    setSelectedFileName('');
->>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
   };
 
   return (

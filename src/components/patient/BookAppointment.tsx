@@ -219,15 +219,9 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
 
     setIsSubmitting(true);
 
-<<<<<<< HEAD
     (async () => {
       try {
         const booked = await MedicareApiClient.bookAppointment({
-=======
-    setTimeout(() => {
-      try {
-        const booked = MedicareApiClient.bookAppointment({
->>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
           doctorId: selectedDoctor.id,
           patientId: currentUser.id,
           patientName: currentUser.name,
@@ -242,11 +236,7 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
         setIsSubmitting(false);
         setBookingError(err.message || 'Failed to book appointment. Slot may have been taken.');
       }
-<<<<<<< HEAD
     })();
-=======
-    }, 400);
->>>>>>> 85356b1c7ebac862bbb456be6c3bab1f9c48068c
   };
 
   return (
