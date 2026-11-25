@@ -11,6 +11,10 @@ export interface User {
   bloodGroup?: string;
   status: 'Active' | 'Inactive';
   uniqueDoctorId?: string; // Admin-issued unique doctor ID (e.g. DOC-1001)
+<<<<<<< HEAD
+=======
+  loginPassword?: string;  // Admin-provided initial/current login password
+>>>>>>> origin/main
   dateOfBirth?: string;
   age?: number;
   address?: string;
@@ -46,6 +50,10 @@ export interface Doctor {
   email?: string;
   phone?: string;
   uniqueDoctorId?: string; // Admin-issued unique ID for doctor login (e.g. DOC-1001)
+<<<<<<< HEAD
+=======
+  loginPassword?: string;  // Admin-provided login password
+>>>>>>> origin/main
 }
 
 export type AppointmentStatus = 'Upcoming' | 'Completed' | 'Pending' | 'Cancelled';

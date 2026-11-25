@@ -5,6 +5,10 @@ import java.sql.Timestamp;
 
 /**
  * Abstract Base Entity demonstrating OOP Abstraction and Encapsulation.
+<<<<<<< HEAD
+=======
+ * Rubric Criterion: Core Java Concepts (OOP)
+>>>>>>> origin/main
  */
 public abstract class User implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -12,18 +16,25 @@ public abstract class User implements Serializable {
     protected String id;
     protected String name;
     protected String email;
+<<<<<<< HEAD
     // Marked transient so Gson never serializes password hashes into API responses
     protected transient String passwordHash;
+=======
+    protected String passwordHash;
+>>>>>>> origin/main
     protected String role; // "PATIENT", "DOCTOR", "ADMIN"
     protected String phone;
     protected String gender;
     protected String bloodGroup;
     protected String avatarUrl;
     protected String status;
+<<<<<<< HEAD
     protected String uniqueDoctorId;
     protected String allergies;
     protected String medicalConditions;
     protected String emergencyContact;
+=======
+>>>>>>> origin/main
     protected Timestamp createdAt;
 
     public User() {
@@ -38,8 +49,15 @@ public abstract class User implements Serializable {
         this.status = "Active";
     }
 
+<<<<<<< HEAD
     public abstract String getRoleDisplayName();
 
+=======
+    // Abstract method enforcing Polymorphism in derived subclasses
+    public abstract String getRoleDisplayName();
+
+    // Encapsulated Getters & Setters
+>>>>>>> origin/main
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -70,6 +88,7 @@ public abstract class User implements Serializable {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+<<<<<<< HEAD
     public String getUniqueDoctorId() { return uniqueDoctorId; }
     public void setUniqueDoctorId(String uniqueDoctorId) { this.uniqueDoctorId = uniqueDoctorId; }
 
@@ -82,6 +101,8 @@ public abstract class User implements Serializable {
     public String getEmergencyContact() { return emergencyContact; }
     public void setEmergencyContact(String emergencyContact) { this.emergencyContact = emergencyContact; }
 
+=======
+>>>>>>> origin/main
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 

@@ -1,18 +1,32 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { Search, X, FileText, CheckCircle2, Ban, AlertCircle } from 'lucide-react';
 import { Appointment, ViewMode } from '../../types';
 import { MedicareApiClient } from '../../services/api';
 import { AppointmentSlipModal } from '../patient/AppointmentSlipModal';
+=======
+import React, { useState } from 'react';
+import { Search, Calendar, Clock, MapPin, X } from 'lucide-react';
+import { Appointment, ViewMode } from '../../types';
+import { MedicareApiClient } from '../../services/api';
+>>>>>>> origin/main
 
 interface AdminAppointmentManagementProps {
   onNavigate: (view: ViewMode) => void;
 }
 
+<<<<<<< HEAD
 export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProps> = () => {
+=======
+export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProps> = ({
+  onNavigate,
+}) => {
+>>>>>>> origin/main
   const [appointments, setAppointments] = useState<Appointment[]>(
     MedicareApiClient.getAppointments()
   );
   const [search, setSearch] = useState('');
+<<<<<<< HEAD
   const [statusFilter, setStatusFilter] = useState<
     'All' | 'Upcoming' | 'Completed' | 'Pending' | 'Cancelled'
   >('All');
@@ -26,6 +40,10 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
       setAppointments(MedicareApiClient.getAppointments());
     });
   }, []);
+=======
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Upcoming' | 'Completed' | 'Pending' | 'Cancelled'>('All');
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+>>>>>>> origin/main
 
   const filtered = appointments.filter((apt) => {
     const matchesSearch =
@@ -51,6 +69,7 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
     }
   };
 
+<<<<<<< HEAD
   const handleStatusUpdate = async (
     appointmentId: string,
     status: 'Completed' | 'Cancelled'
@@ -69,6 +88,8 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
     }
   };
 
+=======
+>>>>>>> origin/main
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -91,7 +112,11 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
         </div>
       </div>
 
+<<<<<<< HEAD
       <div className="flex items-center gap-1.5 bg-white p-3 rounded-2xl border border-slate-200/90 flex-wrap">
+=======
+      <div className="flex items-center gap-1.5 bg-white p-3 rounded-2xl border border-slate-200/90">
+>>>>>>> origin/main
         {(['All', 'Upcoming', 'Completed', 'Pending', 'Cancelled'] as const).map((s) => (
           <button
             key={s}
@@ -146,10 +171,14 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
                   </td>
                   <td className="py-3 px-6 text-right">
                     <button
+<<<<<<< HEAD
                       onClick={() => {
                         setActionError(null);
                         setSelectedAppointment(apt);
                       }}
+=======
+                      onClick={() => setSelectedAppointment(apt)}
+>>>>>>> origin/main
                       className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold border border-slate-200 rounded-lg transition-colors cursor-pointer text-xs"
                     >
                       Audit
@@ -169,18 +198,25 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
               <h4 className="text-sm font-bold text-slate-900">Appointment Audit Log</h4>
               <button
                 onClick={() => setSelectedAppointment(null)}
+<<<<<<< HEAD
                 className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+=======
+                className="text-slate-400 hover:text-slate-600 p-1"
+>>>>>>> origin/main
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-3 text-xs">
+<<<<<<< HEAD
               {actionError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{actionError}</span>
                 </div>
               )}
+=======
+>>>>>>> origin/main
               <div className="flex justify-between">
                 <span className="text-slate-400">Appointment ID:</span>
                 <span className="font-mono text-slate-900">{selectedAppointment.id}</span>
@@ -202,6 +238,7 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
                 <span className="text-slate-900">{selectedAppointment.hospital}</span>
               </div>
               <div className="flex justify-between">
+<<<<<<< HEAD
                 <span className="text-slate-400">Status:</span>
                 <span className="font-semibold text-slate-900">{selectedAppointment.status}</span>
               </div>
@@ -256,11 +293,24 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
                     Close
                   </button>
                 </div>
+=======
+                <span className="text-slate-400">Consultation Fee:</span>
+                <span className="font-bold text-slate-900">₹{selectedAppointment.fee}</span>
+              </div>
+              <div className="pt-2 flex justify-end">
+                <button
+                  onClick={() => setSelectedAppointment(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg"
+                >
+                  Close
+                </button>
+>>>>>>> origin/main
               </div>
             </div>
           </div>
         </div>
       )}
+<<<<<<< HEAD
 
       {slipAppointment && (
         <AppointmentSlipModal
@@ -268,6 +318,8 @@ export const AdminAppointmentManagement: React.FC<AdminAppointmentManagementProp
           onClose={() => setSlipAppointment(null)}
         />
       )}
+=======
+>>>>>>> origin/main
     </div>
   );
 };

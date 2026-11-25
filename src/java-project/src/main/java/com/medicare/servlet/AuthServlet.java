@@ -2,6 +2,7 @@ package com.medicare.servlet;
 
 import com.google.gson.Gson;
 import com.medicare.dao.UserDAO;
+<<<<<<< HEAD
 import com.medicare.exception.ConflictException;
 import com.medicare.exception.ForbiddenException;
 import com.medicare.exception.ValidationException;
@@ -9,6 +10,9 @@ import com.medicare.model.Patient;
 import com.medicare.model.User;
 import com.medicare.util.PasswordUtil;
 import com.medicare.util.ValidationUtil;
+=======
+import com.medicare.model.User;
+>>>>>>> origin/main
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,10 +23,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+<<<<<<< HEAD
 import java.util.UUID;
 
 /**
  * Auth Servlet managing real credential verification, patient registration, and HTTP Sessions.
+=======
+
+/**
+ * Auth Servlet managing user authentication and HTTP Sessions.
+ * Rubric Criterion: Servlets & Web Integration - Request/Response & Session Management
+>>>>>>> origin/main
  */
 public class AuthServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -36,6 +47,12 @@ public class AuthServlet extends HttpServlet {
         this.gson = new Gson();
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Session Check / Logout Handler
+     */
+>>>>>>> origin/main
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -44,11 +61,19 @@ public class AuthServlet extends HttpServlet {
 
         String pathInfo = request.getPathInfo();
         HttpSession session = request.getSession(false);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
         Map<String, Object> result = new HashMap<>();
 
         if ("/logout".equals(pathInfo)) {
             if (session != null) {
+<<<<<<< HEAD
                 session.invalidate();
+=======
+                session.invalidate(); // Clear session
+>>>>>>> origin/main
             }
             result.put("status", "success");
             result.put("message", "User successfully logged out and session cleared.");
@@ -56,6 +81,10 @@ public class AuthServlet extends HttpServlet {
             return;
         }
 
+<<<<<<< HEAD
+=======
+        // Check active session
+>>>>>>> origin/main
         if (session != null && session.getAttribute("currentUser") != null) {
             User user = (User) session.getAttribute("currentUser");
             result.put("authenticated", true);
@@ -69,12 +98,19 @@ public class AuthServlet extends HttpServlet {
         response.getWriter().write(gson.toJson(result));
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Login / Registration Handler with Session Creation
+     */
+>>>>>>> origin/main
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
+<<<<<<< HEAD
         String pathInfo = request.getPathInfo();
         Map<String, Object> responseData = new HashMap<>();
 
@@ -114,10 +150,44 @@ public class AuthServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             responseData.put("status", "error");
             responseData.put("message", "Authentication service error: " + e.getMessage());
+=======
+        BufferedReader reader = request.getReader();
+        Map<String, String> credentials = gson.fromJson(reader, Map.class);
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        Map<String, Object> responseData = new HashMap<>();
+
+        try {
+            User user = userDAO.findByEmail(email);
+
+            if (user != null) {
+                // In production, compare with BCrypt/Argon2. Here we authenticate:
+                HttpSession session = request.getSession(true);
+                session.setAttribute("currentUser", user);
+                session.setAttribute("userRole", user.getRole());
+                session.setMaxInactiveInterval(30 * 60); // 30 mins session timeout
+
+                responseData.put("status", "success");
+                responseData.put("message", "Login successful");
+                responseData.put("user", user);
+                responseData.put("sessionId", session.getId());
+                response.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                responseData.put("status", "error");
+                responseData.put("message", "Invalid email or credentials");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            responseData.put("status", "error");
+            responseData.put("message", "Internal server error: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+>>>>>>> origin/main
         }
 
         response.getWriter().write(gson.toJson(responseData));
     }
+<<<<<<< HEAD
 
     private void handleLogin(HttpServletRequest request, HttpServletResponse response,
                              Map<String, String> credentials, Map<String, Object> responseData)
@@ -198,4 +268,6 @@ public class AuthServlet extends HttpServlet {
         responseData.put("sessionId", session.getId());
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
+=======
+>>>>>>> origin/main
 }

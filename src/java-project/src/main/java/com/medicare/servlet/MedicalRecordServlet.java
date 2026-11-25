@@ -2,11 +2,16 @@ package com.medicare.servlet;
 
 import com.google.gson.Gson;
 import com.medicare.dao.MedicalRecordDAO;
+<<<<<<< HEAD
 import com.medicare.exception.ForbiddenException;
 import com.medicare.exception.ValidationException;
 import com.medicare.model.MedicalRecord;
 import com.medicare.model.User;
 import com.medicare.util.ValidationUtil;
+=======
+import com.medicare.model.MedicalRecord;
+import com.medicare.model.User;
+>>>>>>> origin/main
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +26,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
+<<<<<<< HEAD
  * Servlet for managing patient Electronic Health Records (EHR) with strict ownership checks.
+=======
+ * Servlet for managing patient electronic health records (EHR).
+ * Rubric Criterion: Servlets & Web Integration
+>>>>>>> origin/main
  */
 public class MedicalRecordServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -35,6 +45,7 @@ public class MedicalRecordServlet extends HttpServlet {
         this.gson = new Gson();
     }
 
+<<<<<<< HEAD
     private User requireCurrentUser(HttpServletRequest request) throws ForbiddenException {
         HttpSession session = request.getSession(false);
         if (session == null || !(session.getAttribute("currentUser") instanceof User)) {
@@ -43,12 +54,15 @@ public class MedicalRecordServlet extends HttpServlet {
         return (User) session.getAttribute("currentUser");
     }
 
+=======
+>>>>>>> origin/main
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
+<<<<<<< HEAD
         try {
             User currentUser = requireCurrentUser(request);
             boolean isClinicalOrAdmin = "DOCTOR".equalsIgnoreCase(currentUser.getRole())
@@ -78,6 +92,31 @@ public class MedicalRecordServlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+=======
+        String patientId = request.getParameter("patientId");
+
+        HttpSession session = request.getSession(false);
+        if (patientId == null && session != null && session.getAttribute("currentUser") != null) {
+            User user = (User) session.getAttribute("currentUser");
+            patientId = user.getId();
+        }
+
+        try {
+            if (patientId != null) {
+                List<MedicalRecord> list = medicalRecordDAO.findByPatientId(patientId);
+                response.getWriter().write(gson.toJson(list));
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                Map<String, String> err = new HashMap<>();
+                err.put("error", "Missing patientId");
+                response.getWriter().write(gson.toJson(err));
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            Map<String, String> err = new HashMap<>();
+            err.put("error", e.getMessage());
+            response.getWriter().write(gson.toJson(err));
+>>>>>>> origin/main
         }
     }
 
@@ -86,6 +125,7 @@ public class MedicalRecordServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+<<<<<<< HEAD
         Map<String, Object> responseData = new HashMap<>();
 
         try (BufferedReader reader = request.getReader()) {
@@ -138,10 +178,40 @@ public class MedicalRecordServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             responseData.put("status", "error");
             responseData.put("message", e.getMessage());
+=======
+
+        BufferedReader reader = request.getReader();
+        MedicalRecord record = gson.fromJson(reader, MedicalRecord.class);
+
+        if (record.getId() == null || record.getId().isEmpty()) {
+            record.setId("REC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        }
+
+        Map<String, Object> responseData = new HashMap<>();
+
+        try {
+            boolean success = medicalRecordDAO.createRecord(record);
+
+            if (success) {
+                responseData.put("status", "success");
+                responseData.put("message", "Medical record created successfully.");
+                responseData.put("record", record);
+                response.setStatus(HttpServletResponse.SC_CREATED);
+            } else {
+                responseData.put("status", "error");
+                responseData.put("message", "Failed to create medical record.");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (Exception e) {
+            responseData.put("status", "error");
+            responseData.put("message", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+>>>>>>> origin/main
         }
 
         response.getWriter().write(gson.toJson(responseData));
     }
+<<<<<<< HEAD
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
@@ -183,4 +253,6 @@ public class MedicalRecordServlet extends HttpServlet {
 
         response.getWriter().write(gson.toJson(res));
     }
+=======
+>>>>>>> origin/main
 }

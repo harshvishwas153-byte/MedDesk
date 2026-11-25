@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 import React, { useRef, useState, useEffect } from 'react';
+=======
+import React, { useRef, useState } from 'react';
+>>>>>>> origin/main
 import {
   X,
   Printer,
   Download,
   CheckCircle2,
+<<<<<<< HEAD
+=======
+  Calendar,
+  Clock,
+  MapPin,
+>>>>>>> origin/main
   Stethoscope,
   ShieldCheck,
   User,
@@ -13,7 +23,10 @@ import {
   Loader2,
 } from 'lucide-react';
 import { Appointment, User as PatientUser } from '../../types';
+<<<<<<< HEAD
 import { BillingSlip, MedicareApiClient } from '../../services/api';
+=======
+>>>>>>> origin/main
 import { exportElementToPdf, generateAppointmentSlipPdf } from '../../utils/pdfGenerator';
 
 interface AppointmentSlipModalProps {
@@ -29,6 +42,7 @@ export const AppointmentSlipModal: React.FC<AppointmentSlipModalProps> = ({
 }) => {
   const slipRef = useRef<HTMLDivElement>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+<<<<<<< HEAD
   const [billingSlip, setBillingSlip] = useState<BillingSlip | undefined>(
     MedicareApiClient.getBillingSlip(appointment.id)
   );
@@ -60,6 +74,14 @@ export const AppointmentSlipModal: React.FC<AppointmentSlipModalProps> = ({
     billingSlip?.transactionRef ||
     `OPD/MC-${appointment.id.replace(/[^a-zA-Z0-9]/g, '').slice(0, 10).toUpperCase()}`;
   const invoiceNo = billingSlip?.invoiceId || `SLIP-${appointment.id.toUpperCase()}`;
+=======
+
+  // Breakdown calculations
+  const fee = appointment.fee || 500;
+  const docFee = Math.round(fee * 0.8);
+  const vitalsFee = Math.round(fee * 0.15);
+  const vaultFee = fee - docFee - vitalsFee;
+>>>>>>> origin/main
 
   const handlePrint = () => {
     window.print();
@@ -179,7 +201,11 @@ export const AppointmentSlipModal: React.FC<AppointmentSlipModalProps> = ({
                   OPD Consultation & Billing Slip
                 </span>
                 <p className="text-xs font-mono font-bold text-slate-900">
+<<<<<<< HEAD
                   Slip No: {invoiceNo}
+=======
+                  Slip No: SLIP-{appointment.id.toUpperCase()}
+>>>>>>> origin/main
                 </p>
                 <p className="text-[11px] text-slate-500">
                   Date: <strong className="text-slate-700">{appointment.date}</strong> | Time: <strong className="text-slate-700">{appointment.time}</strong>
@@ -192,11 +218,19 @@ export const AppointmentSlipModal: React.FC<AppointmentSlipModalProps> = ({
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-wider">
+<<<<<<< HEAD
                   Payment Status: {paymentStatus} ({paymentMode.toUpperCase()})
                 </span>
               </div>
               <span className="text-[11px] font-semibold text-emerald-700 hidden sm:inline">
                 Booking Ref #{appointment.id}
+=======
+                  Payment Status: PAID & CONFIRMED (CASH ON DESK)
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-emerald-700 hidden sm:inline">
+                Token / Booking Ref #{appointment.id}
+>>>>>>> origin/main
               </span>
             </div>
 
@@ -341,17 +375,29 @@ export const AppointmentSlipModal: React.FC<AppointmentSlipModalProps> = ({
 
                 <div className="grid grid-cols-3 gap-y-1.5 text-xs">
                   <span className="text-slate-400 font-medium">Payment Mode:</span>
+<<<<<<< HEAD
                   <span className="col-span-2 font-bold text-slate-800">{paymentMode}</span>
 
                   <span className="text-slate-400 font-medium">Receipt ID:</span>
                   <span className="col-span-2 font-mono font-medium text-slate-800 truncate">
                     {transactionRef}
+=======
+                  <span className="col-span-2 font-bold text-slate-800">Cash on Desk (Counter Payment)</span>
+
+                  <span className="text-slate-400 font-medium">Receipt ID:</span>
+                  <span className="col-span-2 font-mono font-medium text-slate-800 truncate">
+                    CSH/MC-{appointment.id.replace(/[^a-zA-Z0-9]/g, '').slice(0, 10).toUpperCase()}-9821
+>>>>>>> origin/main
                   </span>
 
                   <span className="text-slate-400 font-medium">Payment Status:</span>
                   <span className="col-span-2 text-emerald-700 font-bold inline-flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+<<<<<<< HEAD
                     {paymentStatus === 'PAID' ? 'PAID IN FULL (SUCCESS)' : 'PAYABLE AT DESK (CONFIRMED)'}
+=======
+                    PAID IN FULL (SUCCESS)
+>>>>>>> origin/main
                   </span>
 
                   <span className="text-slate-400 font-medium">Timestamp:</span>

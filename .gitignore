@@ -2,7 +2,10 @@ node_modules/
 build/
 dist/
 coverage/
+<<<<<<< HEAD
 data/
+=======
+>>>>>>> origin/main
 .DS_Store
 *.log
 .env*

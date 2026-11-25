@@ -29,6 +29,12 @@ import {
 import { MedicareApiClient } from '../../services/api';
 import { generateMedicalRecordPdf } from '../../utils/pdfGenerator';
 
+<<<<<<< HEAD
+=======
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+
+>>>>>>> origin/main
 interface TextConsultationProps {
   currentUser: UserType;
   onNavigate: (view: ViewMode) => void;
@@ -55,10 +61,13 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
   const [customReportCategory, setCustomReportCategory] = useState<'Test Reports' | 'Prescriptions' | 'Consultations'>('Test Reports');
   const [reportNote, setReportNote] = useState('');
   const [selectedFileName, setSelectedFileName] = useState('');
+<<<<<<< HEAD
   const [selectedFileType, setSelectedFileType] = useState('PDF');
   const [selectedFileSize, setSelectedFileSize] = useState('1.8 MB');
   const [chatError, setChatError] = useState<string | null>(null);
   const [reportError, setReportError] = useState<string | null>(null);
+=======
+>>>>>>> origin/main
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
@@ -77,15 +86,36 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
         const msgs = MedicareApiClient.getConsultationMessages(active.id);
         setMessages(msgs);
       }
+<<<<<<< HEAD
     } else {
       setMessages([]);
+=======
+>>>>>>> origin/main
     }
   };
 
   useEffect(() => {
     loadData();
+<<<<<<< HEAD
     return MedicareApiClient.subscribe(loadData);
   }, [currentUser.id]);
+=======
+    const unsubscribe = MedicareApiClient.subscribe(loadData);
+
+    try {
+      const q = query(collection(db, 'consultations'));
+      const unsubCloud = onSnapshot(q, () => {
+        loadData();
+      });
+      return () => {
+        unsubscribe();
+        unsubCloud();
+      };
+    } catch {
+      return () => unsubscribe();
+    }
+  }, [currentUser]);
+>>>>>>> origin/main
 
   const activeConsultation =
     consultations.find((c) => c.id === selectedConsultationId) || consultations[0];
@@ -93,7 +123,27 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
   useEffect(() => {
     const targetId = activeConsultation?.id || selectedConsultationId;
     if (!targetId) return;
+<<<<<<< HEAD
     setMessages(MedicareApiClient.getConsultationMessages(targetId));
+=======
+
+    setMessages(MedicareApiClient.getConsultationMessages(targetId));
+
+    try {
+      const q = query(
+        collection(db, 'consultation_messages'),
+        where('consultationId', '==', targetId)
+      );
+      const unsubMsgs = onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+          const cloudMsgs: ChatMessage[] = snapshot.docs.map((doc) => doc.data() as ChatMessage);
+          MedicareApiClient.mergeConsultationMessages(targetId, cloudMsgs);
+          setMessages(MedicareApiClient.getConsultationMessages(targetId));
+        }
+      });
+      return () => unsubMsgs();
+    } catch {}
+>>>>>>> origin/main
   }, [selectedConsultationId, activeConsultation?.id]);
 
   const scrollToBottom = () => {
@@ -131,17 +181,56 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
     }, 100);
   };
 
+<<<<<<< HEAD
   const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!inputText.trim() || !activeConsultation) return;
+=======
+  const handleSendMessage = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!inputText.trim() || !activeConsultation) return;
+
+>>>>>>> origin/main
     if (!activeConsultation.isFollowUpActive) return;
 
     const messageText = inputText.trim();
     setInputText('');
+<<<<<<< HEAD
     setChatError(null);
 
     try {
       await MedicareApiClient.sendConsultationMessage({
+=======
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const optimisticMsg: ChatMessage = {
+      id: `msg-${Date.now()}`,
+      consultationId: activeConsultation.id,
+      senderId: currentUser.id,
+      senderRole: 'PATIENT',
+      senderName: currentUser.name,
+      senderAvatar: currentUser.avatar,
+      text: messageText,
+      timestamp: timeStr,
+    };
+
+    // 1. INSTANT optimistic state update (0ms delay!)
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === optimisticMsg.id || (m.text === messageText && m.timestamp === timeStr))) {
+        return prev;
+      }
+      return [...prev, optimisticMsg];
+    });
+
+    // 2. Immediate scroll to bottom
+    scrollToBottom();
+
+    // 3. Persist asynchronously in background
+    setTimeout(() => {
+      MedicareApiClient.sendConsultationMessage({
+>>>>>>> origin/main
         consultationId: activeConsultation.id,
         senderId: currentUser.id,
         senderRole: 'PATIENT',
@@ -149,6 +238,7 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
         senderAvatar: currentUser.avatar,
         text: messageText,
       });
+<<<<<<< HEAD
       scrollToBottom();
     } catch (err) {
       setInputText(messageText);
@@ -175,22 +265,41 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
     setSelectedFileSize(mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} KB`);
     if (!customReportTitle) {
       setCustomReportTitle(file.name.replace(/\.[^/.]+$/, ''));
+=======
+    }, 0);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFileName(file.name);
+      if (!customReportTitle) {
+        setCustomReportTitle(file.name.replace(/\.[^/.]+$/, ''));
+      }
+>>>>>>> origin/main
     }
   };
 
   const handleSendReport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeConsultation) return;
+<<<<<<< HEAD
     setReportError(null);
+=======
+>>>>>>> origin/main
 
     let attachment: ChatAttachment;
 
     if (reportSendMode === 'existing') {
       const rec = userRecords.find((r: MedicalRecord) => r.id === selectedRecordId) || userRecords[0];
+<<<<<<< HEAD
       if (!rec) {
         setReportError('No saved record selected.');
         return;
       }
+=======
+      if (!rec) return;
+>>>>>>> origin/main
 
       attachment = {
         type: 'report',
@@ -202,27 +311,43 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
         notes: reportNote || rec.notes,
       };
     } else {
+<<<<<<< HEAD
       if (!customReportTitle.trim()) {
         setReportError('Report title is required.');
         return;
       }
 
       try {
+=======
+      if (!customReportTitle.trim()) return;
+
+      try {
+        // Save as new medical record in patient's vault
+>>>>>>> origin/main
         const newRec = await MedicareApiClient.uploadRecord({
           patientId: currentUser.id,
           title: customReportTitle.trim(),
           date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
           category: customReportCategory,
+<<<<<<< HEAD
           fileType: selectedFileType || 'PDF',
           fileSize: selectedFileSize || '2.1 MB',
           doctorName: activeConsultation.doctorName,
           facility: activeConsultation.hospitalName || 'MedDesk Diagnostic Center',
           notes: reportNote.trim() || 'Uploaded via Doctor-Patient Live Chat',
+=======
+          fileType: 'PDF',
+          fileSize: '2.1 MB',
+          doctorName: activeConsultation.doctorName,
+          facility: activeConsultation.hospitalName || 'MedDesk Diagnostic Center',
+          notes: reportNote || 'Uploaded via Doctor-Patient Live Chat',
+>>>>>>> origin/main
         });
 
         attachment = {
           type: 'report',
           title: newRec.title,
+<<<<<<< HEAD
           fileName: `${newRec.title.replace(/\s+/g, '_')}.${(selectedFileType || 'pdf').toLowerCase()}`,
           fileType: selectedFileType || 'PDF',
           fileSize: selectedFileSize || '2.1 MB',
@@ -231,6 +356,16 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
         };
       } catch (err) {
         setReportError((err as Error).message || 'Failed to upload report.');
+=======
+          fileName: `${newRec.title.replace(/\s+/g, '_')}.pdf`,
+          fileType: 'PDF',
+          fileSize: '2.1 MB',
+          recordId: newRec.id,
+          notes: reportNote,
+        };
+      } catch (err) {
+        console.error(err);
+>>>>>>> origin/main
         return;
       }
     }
@@ -239,6 +374,7 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
       ? `📄 Shared Medical Report: ${attachment.title}\n"${reportNote.trim()}"`
       : `📄 Shared Medical Report: ${attachment.title}`;
 
+<<<<<<< HEAD
     try {
       await MedicareApiClient.sendConsultationMessage({
         consultationId: activeConsultation.id,
@@ -261,6 +397,25 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
     } catch (err) {
       setReportError((err as Error).message || 'Failed to send report message.');
     }
+=======
+    MedicareApiClient.sendConsultationMessage({
+      consultationId: activeConsultation.id,
+      senderId: currentUser.id,
+      senderRole: 'PATIENT',
+      senderName: currentUser.name,
+      senderAvatar: currentUser.avatar,
+      text: messageText,
+      attachments: [attachment],
+    });
+
+    setMessages(MedicareApiClient.getConsultationMessages(activeConsultation.id));
+
+    setShowSendReportModal(false);
+    setSelectedRecordId('');
+    setCustomReportTitle('');
+    setSelectedFileName('');
+    setReportNote('');
+>>>>>>> origin/main
   };
 
   const handleDownloadAttachment = (att: ChatAttachment) => {
@@ -660,6 +815,7 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
               </div>
 
               {/* Bottom Chat Input Bar */}
+<<<<<<< HEAD
               <div className="p-2.5 sm:p-4 border-t border-slate-200 bg-white shrink-0 overflow-x-hidden space-y-2">
                 {chatError && (
                   <div className="px-3 py-2 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center justify-between gap-2">
@@ -669,6 +825,9 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
                     </button>
                   </div>
                 )}
+=======
+              <div className="p-2.5 sm:p-4 border-t border-slate-200 bg-white shrink-0 overflow-x-hidden">
+>>>>>>> origin/main
                 {activeConsultation.isFollowUpActive ? (
                   <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                     <button
@@ -750,6 +909,7 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
             </div>
 
             <form onSubmit={handleSendReport} className="p-6 space-y-4 text-xs">
+<<<<<<< HEAD
               {reportError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -757,6 +917,8 @@ export const TextConsultation: React.FC<TextConsultationProps> = ({
                 </div>
               )}
 
+=======
+>>>>>>> origin/main
               {/* Tab Selector: Existing vs Upload New */}
               <div className="flex items-center p-1 bg-slate-100 rounded-2xl">
                 <button

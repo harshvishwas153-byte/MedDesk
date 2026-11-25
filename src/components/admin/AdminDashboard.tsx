@@ -31,6 +31,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [newUserName, setNewUserName] = useState('');
   const [newUserEmail, setNewUserEmail] = useState('');
   const [newUserRole, setNewUserRole] = useState<'PATIENT' | 'DOCTOR'>('PATIENT');
+<<<<<<< HEAD
   const [newUserPassword, setNewUserPassword] = useState('');
   const [actionError, setActionError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -49,6 +50,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   }, []);
 
+=======
+  const [mobileTab, setMobileTab] = useState<'users' | 'metrics' | 'analytics'>('users');
+
+>>>>>>> origin/main
   // Dynamic weekly chart data based on actual appointments in database
   const getWeeklyChartData = () => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -86,6 +91,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const totalAppointmentsCount = appointments.length;
   const activeTodayCount = users.filter((u) => u.status === 'Active').length;
 
+<<<<<<< HEAD
   const handleToggleStatus = async (userId: string) => {
     setActionError(null);
     try {
@@ -128,10 +134,44 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     } finally {
       setIsSaving(false);
     }
+=======
+  const handleToggleStatus = (userId: string) => {
+    const updated = MedicareApiClient.toggleUserStatus(userId);
+    setUsers(updated);
+    if (selectedUser && selectedUser.id === userId) {
+      setSelectedUser({
+        ...selectedUser,
+        status: selectedUser.status === 'Active' ? 'Inactive' : 'Active',
+      });
+    }
+  };
+
+  const handleAddUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUserName || !newUserEmail) return;
+
+    const newUser: User = {
+      id: `usr-${Date.now()}`,
+      name: newUserName,
+      email: newUserEmail,
+      role: newUserRole,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+      status: 'Active',
+    };
+
+    const currentUsers = MedicareApiClient.getUsers();
+    const updated = [newUser, ...currentUsers];
+    localStorage.setItem('medicare_users_v1', JSON.stringify(updated));
+    setUsers(updated);
+    setShowAddUserModal(false);
+    setNewUserName('');
+    setNewUserEmail('');
+>>>>>>> origin/main
   };
 
   return (
     <div className="space-y-4 sm:space-y-6">
+<<<<<<< HEAD
       {actionError && (
         <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium rounded-xl flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -178,6 +218,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </button>
         </div>
       )}
+=======
+>>>>>>> origin/main
       {/* Mobile Tab Segmented Switcher */}
       <div className="md:hidden flex items-center p-1 bg-slate-200/80 rounded-xl gap-1">
         <button
@@ -523,11 +565,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
                 <div>
                   <span className="text-slate-400 block text-[11px]">Database Source</span>
+<<<<<<< HEAD
                   <span className="font-mono text-rose-600">MedDesk Clinical API</span>
+=======
+                  <span className="font-mono text-rose-600">JPA / PostgreSQL</span>
+>>>>>>> origin/main
                 </div>
               </div>
 
               <div className="pt-2 flex justify-between gap-3">
+<<<<<<< HEAD
                 {selectedUser.role !== 'ADMIN' && (
                   <button
                     onClick={() => handleToggleStatus(selectedUser.id)}
@@ -544,6 +591,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <button
                   onClick={() => setSelectedUser(null)}
                   className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer ml-auto"
+=======
+                <button
+                  onClick={() => handleToggleStatus(selectedUser.id)}
+                  className={`px-4 py-2 text-xs font-semibold rounded-lg transition-colors ${
+                    selectedUser.status === 'Active'
+                      ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
+                      : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'
+                  }`}
+                >
+                  {selectedUser.status === 'Active' ? 'Deactivate Account' : 'Activate Account'}
+                </button>
+
+                <button
+                  onClick={() => setSelectedUser(null)}
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg"
+>>>>>>> origin/main
                 >
                   Close
                 </button>
@@ -561,7 +624,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <h4 className="text-sm font-bold text-slate-900">Add New User to MedDesk</h4>
               <button
                 onClick={() => setShowAddUserModal(false)}
+<<<<<<< HEAD
                 className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+=======
+                className="text-slate-400 hover:text-slate-600 p-1"
+>>>>>>> origin/main
               >
                 <X className="w-5 h-5" />
               </button>
@@ -598,7 +665,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Role</label>
                 <select
                   value={newUserRole}
+<<<<<<< HEAD
                   onChange={(e) => setNewUserRole(e.target.value as 'PATIENT' | 'DOCTOR')}
+=======
+                  onChange={(e) => setNewUserRole(e.target.value as any)}
+>>>>>>> origin/main
                   className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-rose-400"
                 >
                   <option value="PATIENT">Patient</option>
@@ -606,6 +677,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </select>
               </div>
 
+<<<<<<< HEAD
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Initial Password <span className="text-slate-400 font-normal">(optional — auto-generated if blank)</span>
@@ -620,20 +692,32 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 />
               </div>
 
+=======
+>>>>>>> origin/main
               <div className="pt-2 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowAddUserModal(false)}
+<<<<<<< HEAD
                   className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer"
+=======
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg"
+>>>>>>> origin/main
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
+<<<<<<< HEAD
                   disabled={isSaving}
                   className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-xs font-semibold rounded-lg shadow-2xs cursor-pointer"
                 >
                   {isSaving ? 'Creating...' : 'Create User'}
+=======
+                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg shadow-2xs"
+                >
+                  Create User
+>>>>>>> origin/main
                 </button>
               </div>
             </form>

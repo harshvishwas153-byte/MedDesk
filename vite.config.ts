@@ -46,7 +46,10 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
+<<<<<<< HEAD
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+=======
+>>>>>>> origin/main
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
           runtimeCaching: [
             {
@@ -85,6 +88,7 @@ export default defineConfig(() => {
         },
       }),
     ],
+<<<<<<< HEAD
     build: {
       rollupOptions: {
         output: {
@@ -106,6 +110,11 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@': path.resolve(import.meta.dirname, '.'),
+=======
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '.'),
+>>>>>>> origin/main
       },
     },
     server: {

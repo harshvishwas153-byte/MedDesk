@@ -1,19 +1,27 @@
 package com.medicare.dao;
 
+<<<<<<< HEAD
 import com.medicare.exception.ConflictException;
+=======
+>>>>>>> origin/main
 import com.medicare.exception.DatabaseException;
 import com.medicare.model.Appointment;
 import com.medicare.model.BillingSlip;
 import com.medicare.util.DBConnection;
 
+<<<<<<< HEAD
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+=======
+import java.sql.*;
+>>>>>>> origin/main
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+<<<<<<< HEAD
  * Appointment DAO demonstrating JDBC CRUD, double-booking prevention,
  * and atomic database transactions (Appointment + Billing Invoice).
  */
@@ -56,6 +64,18 @@ public class AppointmentDAO {
         String conflictSql = "SELECT id FROM appointments WHERE doctor_id = ? AND appointment_date = ? "
                 + "AND appointment_time = ? AND status IN ('Upcoming', 'Pending') FOR UPDATE";
 
+=======
+ * Appointment DAO demonstrating JDBC CRUD and Atomic Transaction Handling.
+ * Rubric Criterion: Database Integration (JDBC) - Transaction Handling & PreparedStatement
+ */
+public class AppointmentDAO {
+
+    /**
+     * Creates an Appointment AND corresponding Billing Slip in an ATOMIC DATABASE TRANSACTION.
+     * Demonstrates conn.setAutoCommit(false), conn.commit(), and conn.rollback().
+     */
+    public boolean createAppointmentWithTransaction(Appointment apt, BillingSlip slip) throws DatabaseException {
+>>>>>>> origin/main
         String insertAptSql = "INSERT INTO appointments (id, patient_id, doctor_id, appointment_date, appointment_time, "
                 + "department, hospital, consultation_fee, status, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -64,6 +84,7 @@ public class AppointmentDAO {
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         Connection conn = null;
+<<<<<<< HEAD
         PreparedStatement conflictStmt = null;
         PreparedStatement aptStmt = null;
         PreparedStatement invStmt = null;
@@ -85,6 +106,18 @@ public class AppointmentDAO {
                         + ") is already booked for this doctor.");
             }
 
+=======
+        PreparedStatement aptStmt = null;
+        PreparedStatement invStmt = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            
+            // 1. Begin Database Transaction
+            conn.setAutoCommit(false);
+
+            // 2. Insert Appointment Record
+>>>>>>> origin/main
             aptStmt = conn.prepareStatement(insertAptSql);
             aptStmt.setString(1, apt.getId());
             aptStmt.setString(2, apt.getPatientId());
@@ -98,6 +131,10 @@ public class AppointmentDAO {
             aptStmt.setString(10, apt.getReason());
             aptStmt.executeUpdate();
 
+<<<<<<< HEAD
+=======
+            // 3. Insert Associated Billing Invoice
+>>>>>>> origin/main
             invStmt = conn.prepareStatement(insertInvoiceSql);
             invStmt.setString(1, slip.getInvoiceId());
             invStmt.setString(2, apt.getId());
@@ -113,6 +150,7 @@ public class AppointmentDAO {
             invStmt.setString(12, slip.getTransactionRef());
             invStmt.executeUpdate();
 
+<<<<<<< HEAD
             conn.commit();
             return true;
         } catch (ConflictException ce) {
@@ -122,21 +160,44 @@ public class AppointmentDAO {
                 try {
                     conn.rollback();
                 } catch (SQLException ignored) {
+=======
+            // 4. Commit Atomic Transaction
+            conn.commit();
+            return true;
+
+        } catch (SQLException e) {
+            // 5. Rollback on any failure to maintain database integrity
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                    System.err.println("Transaction rolled back successfully due to: " + e.getMessage());
+                } catch (SQLException ex) {
+                    System.err.println("Rollback error: " + ex.getMessage());
+>>>>>>> origin/main
                 }
             }
             throw new DatabaseException("Failed to commit appointment & billing transaction: " + e.getMessage(), e);
         } finally {
             try {
                 if (conn != null) {
+<<<<<<< HEAD
                     conn.setAutoCommit(true);
                 }
             } catch (SQLException ignored) {
             }
             DBConnection.close(rs, conflictStmt, aptStmt, invStmt, conn);
+=======
+                    conn.setAutoCommit(true); // Restore default autocommit mode
+                }
+            } catch (SQLException ignored) {
+            }
+            DBConnection.close(aptStmt, invStmt, conn);
+>>>>>>> origin/main
         }
     }
 
     public List<Appointment> findByPatientId(String patientId) throws DatabaseException {
+<<<<<<< HEAD
         String sql = BASE_SELECT + "WHERE a.patient_id = ? ORDER BY a.created_at DESC";
         List<Appointment> list = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
@@ -146,10 +207,48 @@ public class AppointmentDAO {
                 while (rs.next()) {
                     list.add(mapRow(rs));
                 }
+=======
+        String sql = "SELECT a.*, u_doc.name AS doctor_name, u_pat.name AS patient_name, u_pat.email AS patient_email "
+                + "FROM appointments a "
+                + "JOIN users u_doc ON a.doctor_id = u_doc.id "
+                + "JOIN users u_pat ON a.patient_id = u_pat.id "
+                + "WHERE a.patient_id = ? ORDER BY a.created_at DESC";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Appointment> list = new ArrayList<>();
+
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, patientId);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Appointment a = new Appointment();
+                a.setId(rs.getString("id"));
+                a.setPatientId(rs.getString("patient_id"));
+                a.setPatientName(rs.getString("patient_name"));
+                a.setPatientEmail(rs.getString("patient_email"));
+                a.setDoctorId(rs.getString("doctor_id"));
+                a.setDoctorName(rs.getString("doctor_name"));
+                a.setDate(rs.getString("appointment_date"));
+                a.setTime(rs.getString("appointment_time"));
+                a.setDepartment(rs.getString("department"));
+                a.setHospital(rs.getString("hospital"));
+                a.setFee(rs.getBigDecimal("consultation_fee"));
+                a.setStatus(rs.getString("status"));
+                a.setReason(rs.getString("reason"));
+                a.setNotes(rs.getString("clinical_notes"));
+                a.setPrescription(rs.getString("prescription"));
+                list.add(a);
+>>>>>>> origin/main
             }
             return list;
         } catch (SQLException e) {
             throw new DatabaseException("Error finding appointments by patient ID: " + e.getMessage(), e);
+<<<<<<< HEAD
         }
     }
 
@@ -182,10 +281,15 @@ public class AppointmentDAO {
             return list;
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving all appointments: " + e.getMessage(), e);
+=======
+        } finally {
+            DBConnection.close(rs, stmt, conn);
+>>>>>>> origin/main
         }
     }
 
     public Appointment findById(String id) throws DatabaseException {
+<<<<<<< HEAD
         String sql = BASE_SELECT + "WHERE a.id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -228,18 +332,70 @@ public class AppointmentDAO {
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving billing invoice: " + e.getMessage(), e);
+=======
+        String sql = "SELECT a.*, u_doc.name AS doctor_name, u_pat.name AS patient_name, u_pat.email AS patient_email "
+                + "FROM appointments a "
+                + "JOIN users u_doc ON a.doctor_id = u_doc.id "
+                + "JOIN users u_pat ON a.patient_id = u_pat.id "
+                + "WHERE a.id = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Appointment a = new Appointment();
+                a.setId(rs.getString("id"));
+                a.setPatientId(rs.getString("patient_id"));
+                a.setPatientName(rs.getString("patient_name"));
+                a.setPatientEmail(rs.getString("patient_email"));
+                a.setDoctorId(rs.getString("doctor_id"));
+                a.setDoctorName(rs.getString("doctor_name"));
+                a.setDate(rs.getString("appointment_date"));
+                a.setTime(rs.getString("appointment_time"));
+                a.setDepartment(rs.getString("department"));
+                a.setHospital(rs.getString("hospital"));
+                a.setFee(rs.getBigDecimal("consultation_fee"));
+                a.setStatus(rs.getString("status"));
+                a.setReason(rs.getString("reason"));
+                a.setNotes(rs.getString("clinical_notes"));
+                a.setPrescription(rs.getString("prescription"));
+                return a;
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DatabaseException("Error finding appointment by ID: " + e.getMessage(), e);
+        } finally {
+            DBConnection.close(rs, stmt, conn);
+>>>>>>> origin/main
         }
     }
 
     public boolean updateStatus(String appointmentId, String newStatus) throws DatabaseException {
         String sql = "UPDATE appointments SET status = ? WHERE id = ?";
+<<<<<<< HEAD
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+=======
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement(sql);
+>>>>>>> origin/main
             stmt.setString(1, newStatus);
             stmt.setString(2, appointmentId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException("Error updating appointment status: " + e.getMessage(), e);
+<<<<<<< HEAD
         }
     }
 
@@ -257,6 +413,10 @@ public class AppointmentDAO {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException("Error updating appointment clinical details: " + e.getMessage(), e);
+=======
+        } finally {
+            DBConnection.close(stmt, conn);
+>>>>>>> origin/main
         }
     }
 }

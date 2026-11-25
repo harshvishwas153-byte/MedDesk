@@ -107,9 +107,13 @@ export const AppointmentConfirmation: React.FC<AppointmentConfirmationProps> = (
               <FileText className="w-4 h-4 text-slate-400" />
               <div>
                 <span className="text-slate-400 block text-[10px]">Type</span>
+<<<<<<< HEAD
                 <span className="font-bold text-slate-900">
                   {appointment.consultationType || 'In-Clinic'}
                 </span>
+=======
+                <span className="font-bold text-slate-900">Text Consultation</span>
+>>>>>>> origin/main
               </div>
             </div>
 
@@ -125,6 +129,7 @@ export const AppointmentConfirmation: React.FC<AppointmentConfirmationProps> = (
 
         {/* Action Buttons (Screen 6: Add to Calendar & Go to Dashboard) */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+<<<<<<< HEAD
           <a
             href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
               `Appointment with ${appointment.doctorName} on ${appointment.date} at ${appointment.time}`
@@ -135,6 +140,18 @@ export const AppointmentConfirmation: React.FC<AppointmentConfirmationProps> = (
           >
             Add to Calendar
           </a>
+=======
+          <button
+            onClick={() => {
+              const text = `Appointment with ${appointment.doctorName} on ${appointment.date} at ${appointment.time}`;
+              const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}`;
+              window.open(googleCalUrl, '_blank');
+            }}
+            className="w-full sm:w-1/2 py-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs rounded-2xl shadow-2xs transition-colors cursor-pointer text-center"
+          >
+            Add to Calendar
+          </button>
+>>>>>>> origin/main
 
           <button
             onClick={() => onNavigate('patient-dashboard')}

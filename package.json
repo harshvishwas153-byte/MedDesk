@@ -4,8 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "dev": "tsx server.ts",
     "start": "node server.ts",
+=======
+    "dev": "vite --port=3000 --host=0.0.0.0",
+>>>>>>> origin/main
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
@@ -30,14 +34,20 @@
     "vite": "^8.3.0"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@firebase/eslint-plugin-security-rules": "^0.0.2",
+=======
+>>>>>>> origin/main
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.28.2",
+<<<<<<< HEAD
     "eslint": "^10.15.0",
+=======
+>>>>>>> origin/main
     "sharp": "^0.35.4",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",

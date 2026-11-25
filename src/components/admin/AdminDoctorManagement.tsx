@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import {
   Search,
   Star,
+=======
+import React, { useState } from 'react';
+import {
+  Search,
+  Star,
+  MapPin,
+  Stethoscope,
+>>>>>>> origin/main
   Plus,
   X,
   KeyRound,
@@ -11,6 +20,7 @@ import {
   RefreshCw,
   Eye,
   EyeOff,
+<<<<<<< HEAD
   CalendarDays,
   Trash2,
   AlertTriangle,
@@ -18,6 +28,21 @@ import {
 } from 'lucide-react';
 import { Doctor, ViewMode } from '../../types';
 import { DoctorScheduleConfig, MedicareApiClient } from '../../services/api';
+=======
+  UserCheck,
+  Building2,
+  Clock,
+  Calendar,
+  CalendarDays,
+  Sparkles,
+  Phone,
+  Mail,
+  Trash2,
+  AlertTriangle,
+} from 'lucide-react';
+import { Doctor, ViewMode } from '../../types';
+import { MedicareApiClient } from '../../services/api';
+>>>>>>> origin/main
 
 interface AdminDoctorManagementProps {
   onNavigate: (view: ViewMode) => void;
@@ -36,6 +61,7 @@ const DEPARTMENTS = [
   'Psychiatry',
 ];
 
+<<<<<<< HEAD
 function createDefaultScheduleConfig(): DoctorScheduleConfig {
   return {
     weekly: {
@@ -64,14 +90,19 @@ function generateSecureInitialPassword(): string {
   return out;
 }
 
+=======
+>>>>>>> origin/main
 export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
   onNavigate,
 }) => {
   const [doctors, setDoctors] = useState<Doctor[]>(MedicareApiClient.getDoctors());
   const [search, setSearch] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+<<<<<<< HEAD
   const [actionError, setActionError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+=======
+>>>>>>> origin/main
 
   // Add Doctor Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -89,6 +120,7 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
   const [phone, setPhone] = useState('+91 98765 00000');
   const [about, setAbout] = useState('');
   const [uniqueDoctorId, setUniqueDoctorId] = useState('');
+<<<<<<< HEAD
   const [initialPassword, setInitialPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
 
@@ -115,10 +147,36 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
     about: '',
     resetPasswordInput: '',
   });
+=======
+  const [loginPassword, setLoginPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
+
+  // Success modal with generated credentials
+  const [createdCredentials, setCreatedCredentials] = useState<{
+    name: string;
+    uniqueDoctorId: string;
+    loginPassword: string;
+    email: string;
+    department: string;
+  } | null>(null);
+
+  // Credentials inspection modal
+  const [inspectCredentialsDoctor, setInspectCredentialsDoctor] = useState<Doctor | null>(null);
+>>>>>>> origin/main
 
   // Delete doctor confirmation state
   const [deleteConfirmDoctor, setDeleteConfirmDoctor] = useState<Doctor | null>(null);
 
+<<<<<<< HEAD
+=======
+  const handleDeleteDoctorConfirm = () => {
+    if (!deleteConfirmDoctor) return;
+    const updated = MedicareApiClient.deleteDoctor(deleteConfirmDoctor.id);
+    setDoctors(updated);
+    setDeleteConfirmDoctor(null);
+  };
+
+>>>>>>> origin/main
   // Multi-Doctor Holiday Modal State
   const [isHolidayModalOpen, setIsHolidayModalOpen] = useState(false);
   const [selectedDoctorIdsForHoliday, setSelectedDoctorIdsForHoliday] = useState<string[]>([]);
@@ -132,6 +190,7 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
   const [modalDoctorSearch, setModalDoctorSearch] = useState('');
   const [holidaySuccessMsg, setHolidaySuccessMsg] = useState<string | null>(null);
 
+<<<<<<< HEAD
   useEffect(() => {
     return MedicareApiClient.subscribe(() => {
       setDoctors(MedicareApiClient.getDoctors());
@@ -153,6 +212,8 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
     }
   };
 
+=======
+>>>>>>> origin/main
   const handleToggleSelectDoctor = (id: string) => {
     setSelectedDoctorIdsForHoliday((prev) =>
       prev.includes(id) ? prev.filter((dId) => dId !== id) : [...prev, id]
@@ -167,6 +228,7 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
     setSelectedDoctorIdsForHoliday([]);
   };
 
+<<<<<<< HEAD
   const handleApplyBulkHoliday = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedDoctorIdsForHoliday.length === 0 || !occasionReason.trim() || !holidayStartDate) {
@@ -228,6 +290,73 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
     } finally {
       setIsSubmitting(false);
     }
+=======
+  const handleApplyBulkHoliday = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedDoctorIdsForHoliday.length === 0 || !occasionReason.trim() || !holidayStartDate) return;
+
+    const startDate = holidayStartDate;
+    const endDate = holidayEndDate || holidayStartDate;
+
+    selectedDoctorIdsForHoliday.forEach((docId) => {
+      const storageKey = `medicare_doctor_schedule_${docId}`;
+      let scheduleConfig;
+      try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          scheduleConfig = JSON.parse(saved);
+        }
+      } catch {}
+
+      if (!scheduleConfig) {
+        scheduleConfig = {
+          weekly: {
+            Monday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', slotDurationMinutes: 20 },
+            Tuesday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', slotDurationMinutes: 20 },
+            Wednesday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', slotDurationMinutes: 20 },
+            Thursday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', slotDurationMinutes: 20 },
+            Friday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', slotDurationMinutes: 20 },
+            Saturday: { isWorking: true, startTime: '10:00 AM', endTime: '01:00 PM', slotDurationMinutes: 20 },
+            Sunday: { isWorking: false, startTime: '10:00 AM', endTime: '04:00 PM', slotDurationMinutes: 20 },
+          },
+          overrides: {},
+          leaves: [],
+          holidays: [],
+        };
+      }
+
+      const newHol = {
+        id: `hol-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+        startDate,
+        endDate,
+        reason: occasionReason.trim(),
+      };
+
+      scheduleConfig.holidays = [newHol, ...(scheduleConfig.holidays || [])];
+      if (!scheduleConfig.overrides) scheduleConfig.overrides = {};
+
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+        const dateStr = dt.toISOString().split('T')[0];
+        scheduleConfig.overrides[dateStr] = {
+          status: 'Holiday',
+          reason: occasionReason.trim(),
+        };
+      }
+
+      localStorage.setItem(storageKey, JSON.stringify(scheduleConfig));
+    });
+
+    const count = selectedDoctorIdsForHoliday.length;
+    setHolidaySuccessMsg(
+      `Holiday "${occasionReason.trim()}" successfully declared for ${count} doctor${count > 1 ? 's' : ''} on ${holidayStartDate}${holidayEndDate && holidayEndDate !== holidayStartDate ? ' to ' + holidayEndDate : ''}.`
+    );
+    setIsHolidayModalOpen(false);
+    setOccasionReason('');
+
+    setTimeout(() => setHolidaySuccessMsg(null), 5000);
+>>>>>>> origin/main
   };
 
   const generateRandomCredentials = () => {
@@ -240,12 +369,22 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
     while (existingIds.has(`DOC-${counter}`)) {
       counter++;
     }
+<<<<<<< HEAD
     setUniqueDoctorId(`DOC-${counter}`);
     setInitialPassword(generateSecureInitialPassword());
   };
 
   const handleOpenAddModal = () => {
     setActionError(null);
+=======
+    const id = `DOC-${counter}`;
+    const pass = `Doctor@${counter}`;
+    setUniqueDoctorId(id);
+    setLoginPassword(pass);
+  };
+
+  const handleOpenAddModal = () => {
+>>>>>>> origin/main
     generateRandomCredentials();
     setName('');
     setEmail('');
@@ -260,6 +399,7 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+<<<<<<< HEAD
   const handleCreateDoctor = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
@@ -372,6 +512,42 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
     } finally {
       setIsSubmitting(false);
     }
+=======
+  const handleCreateDoctor = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    const finalUniqueId = uniqueDoctorId.trim().toUpperCase() || `DOC-${Math.floor(1000 + Math.random() * 9000)}`;
+    const finalPassword = loginPassword.trim() || `Doctor@${finalUniqueId.replace('DOC-', '')}`;
+    const finalEmail = email.trim() || `${name.toLowerCase().replace(/[^a-z0-9]/g, '.')}@meddesk.com`;
+
+    const newDoc = MedicareApiClient.addDoctor({
+      name: name.trim().startsWith('Dr.') ? name.trim() : `Dr. ${name.trim()}`,
+      specialty: specialty.trim() || department,
+      department,
+      hospital: hospital.trim() || 'MedDesk Hospital, Noida',
+      experienceYears: Number(experienceYears) || 5,
+      consultationFee: Number(consultationFee) || 600,
+      education: education.trim() || 'MBBS, MD',
+      about: about.trim() || `${name} is an experienced medical specialist in ${department}.`,
+      email: finalEmail,
+      phone: phone.trim() || '+91 98765 00000',
+      uniqueDoctorId: finalUniqueId,
+      loginPassword: finalPassword,
+    });
+
+    setDoctors(MedicareApiClient.getDoctors());
+    setIsAddModalOpen(false);
+
+    // Show credential distribution dialog
+    setCreatedCredentials({
+      name: newDoc.name,
+      uniqueDoctorId: finalUniqueId,
+      loginPassword: finalPassword,
+      email: finalEmail,
+      department: newDoc.department,
+    });
+>>>>>>> origin/main
   };
 
   const filtered = doctors.filter(
@@ -383,8 +559,11 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
       d.hospital.toLowerCase().includes(search.toLowerCase())
   );
 
+<<<<<<< HEAD
   const portalLoginUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
+=======
+>>>>>>> origin/main
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Top Header Row with Action */}
@@ -398,11 +577,19 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
+<<<<<<< HEAD
             Doctors cannot self-register to ensure clinical safety. Admin issues unique Doctor IDs and resets credentials.
           </p>
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
+=======
+            Doctors cannot self-register to ensure clinical safety. Admin issues unique Doctor IDs & passwords.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+>>>>>>> origin/main
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
@@ -438,6 +625,7 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
         </div>
       </div>
 
+<<<<<<< HEAD
       {actionError && (
         <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium rounded-xl flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -454,6 +642,8 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
         </div>
       )}
 
+=======
+>>>>>>> origin/main
       {holidaySuccessMsg && (
         <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold rounded-2xl flex items-center gap-2.5 animate-fadeIn shadow-xs">
           <CalendarDays className="w-5 h-5 text-amber-600 shrink-0" />
@@ -461,11 +651,21 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
         </div>
       )}
 
+<<<<<<< HEAD
       {/* Doctors Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((doc) => {
           const docUniqueId =
             doc.uniqueDoctorId || `DOC-${doc.id.replace('doc-', '').toUpperCase()}`;
+=======
+
+
+      {/* Doctors Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {filtered.map((doc) => {
+          const docUniqueId = doc.uniqueDoctorId || `DOC-${doc.id.replace('doc-', '').toUpperCase()}`;
+          const docPassword = doc.loginPassword || `Doctor@${docUniqueId.replace('DOC-', '')}`;
+>>>>>>> origin/main
 
           return (
             <div
@@ -482,12 +682,17 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
+<<<<<<< HEAD
                       <h4
                         onClick={() => setSelectedDoctor(doc)}
                         className="text-sm font-bold text-slate-900 truncate hover:text-rose-600 cursor-pointer"
                       >
                         {doc.name}
                       </h4>
+=======
+                      <h4 className="text-sm font-bold text-slate-900 truncate">{doc.name}</h4>
+                      {/* Doctor ID Badge with Copy */}
+>>>>>>> origin/main
                       <button
                         type="button"
                         onClick={() => handleCopy(docUniqueId, `id-${doc.id}`)}
@@ -540,23 +745,39 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
                 <button
                   type="button"
+<<<<<<< HEAD
                   onClick={() => openEditModal(doc)}
                   className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <Edit3 className="w-3 h-3 text-rose-600" />
                   <span>Edit & Reset</span>
+=======
+                  onClick={() => setInspectCredentialsDoctor(doc)}
+                  className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                >
+                  <KeyRound className="w-3 h-3 text-rose-600" />
+                  <span>Credentials</span>
+>>>>>>> origin/main
                 </button>
 
                 <button
                   type="button"
                   onClick={() => {
+<<<<<<< HEAD
                     MedicareApiClient.setAdminSelectedDoctorId(doc.id);
+=======
+                    localStorage.setItem('medicare_admin_selected_doctor_id', doc.id);
+>>>>>>> origin/main
                     onNavigate('admin-doctor-schedule');
                   }}
                   className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
                 >
                   <CalendarDays className="w-3.5 h-3.5" />
+<<<<<<< HEAD
                   <span>Schedule</span>
+=======
+                  <span>Schedule & Availability</span>
+>>>>>>> origin/main
                 </button>
 
                 <button
@@ -583,13 +804,18 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
               </div>
               <div>
                 <h4 className="text-base font-bold text-slate-900">Remove Doctor Record?</h4>
+<<<<<<< HEAD
                 <p className="text-xs text-slate-500">
                   This action will remove the doctor from the active directory.
                 </p>
+=======
+                <p className="text-xs text-slate-500">This action will remove the doctor from active directory.</p>
+>>>>>>> origin/main
               </div>
             </div>
 
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1 text-xs">
+<<<<<<< HEAD
               <p>
                 <span className="font-semibold text-slate-700">Doctor Name:</span>{' '}
                 {deleteConfirmDoctor.name}
@@ -602,6 +828,11 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                 <span className="font-semibold text-slate-700">Unique ID:</span>{' '}
                 {deleteConfirmDoctor.uniqueDoctorId || deleteConfirmDoctor.id}
               </p>
+=======
+              <p><span className="font-semibold text-slate-700">Doctor Name:</span> {deleteConfirmDoctor.name}</p>
+              <p><span className="font-semibold text-slate-700">Department:</span> {deleteConfirmDoctor.department}</p>
+              <p><span className="font-semibold text-slate-700">Unique ID:</span> {deleteConfirmDoctor.uniqueDoctorId || deleteConfirmDoctor.id}</p>
+>>>>>>> origin/main
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-2">
@@ -614,12 +845,20 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
               </button>
               <button
                 type="button"
+<<<<<<< HEAD
                 disabled={isSubmitting}
                 onClick={handleDeleteDoctorConfirm}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer transition-all flex items-center gap-1.5"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>{isSubmitting ? 'Removing...' : 'Delete Doctor'}</span>
+=======
+                onClick={handleDeleteDoctorConfirm}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer transition-all flex items-center gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete Doctor</span>
+>>>>>>> origin/main
               </button>
             </div>
           </div>
@@ -680,15 +919,26 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
 
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+<<<<<<< HEAD
                       Initial Login Password
+=======
+                      Doctor Login Password
+>>>>>>> origin/main
                     </label>
                     <div className="relative">
                       <input
                         type={showPassword ? 'text' : 'password'}
+<<<<<<< HEAD
                         value={initialPassword}
                         onChange={(e) => setInitialPassword(e.target.value)}
                         placeholder="Auto-generated if blank"
                         minLength={6}
+=======
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        placeholder="e.g. Doctor@1008"
+                        required
+>>>>>>> origin/main
                         className="w-full pl-3 pr-8 py-1.5 font-mono text-xs bg-white border border-slate-300 rounded-lg focus:border-rose-500 outline-none text-slate-800"
                       />
                       <button
@@ -702,7 +952,11 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                   </div>
                 </div>
                 <p className="text-[10px] text-slate-500">
+<<<<<<< HEAD
                   Credentials are stored securely via server-side hashing and displayed once upon creation.
+=======
+                  Doctor will use this <strong>Unique Doctor ID</strong> and <strong>Password</strong> to access the clinical portal.
+>>>>>>> origin/main
                 </p>
               </div>
 
@@ -870,11 +1124,18 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                 </button>
                 <button
                   type="submit"
+<<<<<<< HEAD
                   disabled={isSubmitting}
                   className="px-5 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>{isSubmitting ? 'Provisioning...' : 'Provision Doctor Account'}</span>
+=======
+                  className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Provision Doctor Account</span>
+>>>>>>> origin/main
                 </button>
               </div>
             </form>
@@ -882,23 +1143,38 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
         </div>
       )}
 
+<<<<<<< HEAD
       {/* 2. One-Time Modal: Newly Issued / Reset Doctor Credentials */}
       {issuedCredentials && (
+=======
+      {/* 2. Success Modal: Created Doctor Credentials Card to hand off to doctor */}
+      {createdCredentials && (
+>>>>>>> origin/main
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="p-6 text-center">
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3">
                 <Check className="w-6 h-6" />
               </div>
+<<<<<<< HEAD
               <h4 className="text-base font-bold text-slate-900">{issuedCredentials.title}</h4>
               <p className="text-xs text-slate-500 mt-1">
                 Provide these login credentials to <strong>{issuedCredentials.name}</strong>. For security, this password will not be shown again.
               </p>
 
+=======
+              <h4 className="text-base font-bold text-slate-900">Doctor Account Provisioned!</h4>
+              <p className="text-xs text-slate-500 mt-1">
+                Provide these unique login credentials to <strong>{createdCredentials.name}</strong>.
+              </p>
+
+              {/* Credentials Card */}
+>>>>>>> origin/main
               <div className="my-5 p-4 bg-slate-50 rounded-xl border border-slate-200 text-left space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] text-slate-500">Unique Doctor ID:</span>
                   <span className="font-mono text-sm font-bold text-rose-600">
+<<<<<<< HEAD
                     {issuedCredentials.uniqueDoctorId}
                   </span>
                 </div>
@@ -906,12 +1182,25 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                   <span className="text-[11px] text-slate-500">Temporary Password:</span>
                   <span className="font-mono text-sm font-bold text-slate-900">
                     {issuedCredentials.temporaryPassword}
+=======
+                    {createdCredentials.uniqueDoctorId}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] text-slate-500">Doctor Password:</span>
+                  <span className="font-mono text-sm font-bold text-slate-900">
+                    {createdCredentials.loginPassword}
+>>>>>>> origin/main
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] text-slate-500">Assigned Department:</span>
                   <span className="text-xs font-semibold text-slate-700">
+<<<<<<< HEAD
                     {issuedCredentials.department}
+=======
+                    {createdCredentials.department}
+>>>>>>> origin/main
                   </span>
                 </div>
               </div>
@@ -921,13 +1210,22 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                   type="button"
                   onClick={() =>
                     handleCopy(
+<<<<<<< HEAD
                       `MedDesk Doctor Portal Credentials:\nDoctor: ${issuedCredentials.name}\nDoctor ID: ${issuedCredentials.uniqueDoctorId}\nTemporary Password: ${issuedCredentials.temporaryPassword}\nLogin at: ${portalLoginUrl}`,
                       'issued-card'
+=======
+                      `MedDesk Doctor Portal Credentials:\nDoctor: ${createdCredentials.name}\nDoctor ID: ${createdCredentials.uniqueDoctorId}\nPassword: ${createdCredentials.loginPassword}\nLogin at: https://ais-dev-pc2xeplawv67a6d6h6q26e-421796633930.asia-southeast1.run.app`,
+                      'created-card'
+>>>>>>> origin/main
                     )
                   }
                   className="flex-1 py-2 px-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                 >
+<<<<<<< HEAD
                   {copiedId === 'issued-card' ? (
+=======
+                  {copiedId === 'created-card' ? (
+>>>>>>> origin/main
                     <>
                       <Check className="w-3.5 h-3.5" />
                       <span>Copied to Clipboard!</span>
@@ -942,7 +1240,11 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
 
                 <button
                   type="button"
+<<<<<<< HEAD
                   onClick={() => setIssuedCredentials(null)}
+=======
+                  onClick={() => setCreatedCredentials(null)}
+>>>>>>> origin/main
                   className="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl cursor-pointer"
                 >
                   Done
@@ -953,6 +1255,7 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
         </div>
       )}
 
+<<<<<<< HEAD
       {/* 3. Edit Doctor & Reset Password Modal */}
       {editingDoctor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
@@ -966,12 +1269,26 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
               </div>
               <button
                 onClick={() => setEditingDoctor(null)}
+=======
+      {/* 3. Inspect Doctor Credentials Modal */}
+      {inspectCredentialsDoctor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-sm w-full shadow-2xl border border-slate-200 overflow-hidden">
+            <div className="px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-rose-600" />
+                <h4 className="text-xs font-bold text-slate-900">Doctor Access Credentials</h4>
+              </div>
+              <button
+                onClick={() => setInspectCredentialsDoctor(null)}
+>>>>>>> origin/main
                 className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
+<<<<<<< HEAD
             <form onSubmit={handleSaveDoctorEdit} className="p-6 space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
@@ -1113,11 +1430,80 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                 </button>
               </div>
             </form>
+=======
+            <div className="p-5 space-y-3">
+              <div className="flex items-center gap-3">
+                <img
+                  src={inspectCredentialsDoctor.avatar}
+                  alt={inspectCredentialsDoctor.name}
+                  className="w-10 h-10 rounded-xl object-cover border border-slate-200"
+                />
+                <div>
+                  <h5 className="font-bold text-xs text-slate-900">{inspectCredentialsDoctor.name}</h5>
+                  <p className="text-[11px] text-rose-600 font-semibold">
+                    {inspectCredentialsDoctor.specialty}
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/90 text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500 text-[11px]">Unique Doctor ID:</span>
+                  <span className="font-mono font-bold text-rose-700">
+                    {inspectCredentialsDoctor.uniqueDoctorId || `DOC-${inspectCredentialsDoctor.id.replace('doc-', '').toUpperCase()}`}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500 text-[11px]">Login Password:</span>
+                  <span className="font-mono font-bold text-slate-800">
+                    {inspectCredentialsDoctor.loginPassword || `Doctor@${(inspectCredentialsDoctor.uniqueDoctorId || inspectCredentialsDoctor.id).replace(/[^0-9]/g, '') || '123'}`}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500 text-[11px]">Registered Email:</span>
+                  <span className="text-slate-700 font-medium truncate max-w-[170px]">
+                    {inspectCredentialsDoctor.email || 'doctor@meddesk.com'}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const id = inspectCredentialsDoctor.uniqueDoctorId || `DOC-${inspectCredentialsDoctor.id.replace('doc-', '').toUpperCase()}`;
+                  const pass = inspectCredentialsDoctor.loginPassword || `Doctor@${id.replace('DOC-', '')}`;
+                  handleCopy(
+                    `Doctor ID: ${id}\nPassword: ${pass}\nDoctor: ${inspectCredentialsDoctor.name}`,
+                    'inspect-copy'
+                  );
+                }}
+                className="w-full py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-xl shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                {copiedId === 'inspect-copy' ? (
+                  <>
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Credentials Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copy Login Credentials</span>
+                  </>
+                )}
+              </button>
+            </div>
+>>>>>>> origin/main
           </div>
         </div>
       )}
 
+<<<<<<< HEAD
       {/* 4. Doctor Clinical Profile Modal */}
+=======
+      {/* 4. Schedule Modal */}
+>>>>>>> origin/main
       {selectedDoctor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
@@ -1211,6 +1597,10 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
             </div>
 
             <form onSubmit={handleApplyBulkHoliday} className="space-y-4">
+<<<<<<< HEAD
+=======
+              {/* Occasion / Reason */}
+>>>>>>> origin/main
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Occasion / Holiday Name <span className="text-rose-500">*</span>
@@ -1225,6 +1615,10 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                 />
               </div>
 
+<<<<<<< HEAD
+=======
+              {/* Date Selection */}
+>>>>>>> origin/main
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
@@ -1252,6 +1646,10 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                 </div>
               </div>
 
+<<<<<<< HEAD
+=======
+              {/* Select Doctors Section */}
+>>>>>>> origin/main
               <div className="space-y-2.5 pt-2 border-t border-slate-100">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
@@ -1279,6 +1677,10 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                   </div>
                 </div>
 
+<<<<<<< HEAD
+=======
+                {/* Filter search inside modal */}
+>>>>>>> origin/main
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                   <input
@@ -1290,6 +1692,10 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                   />
                 </div>
 
+<<<<<<< HEAD
+=======
+                {/* Scrollable list of doctors with checkboxes */}
+>>>>>>> origin/main
                 <div className="max-h-52 overflow-y-auto border border-slate-200 rounded-xl p-2 space-y-1.5 bg-slate-50/50">
                   {doctors
                     .filter(
@@ -1301,12 +1707,20 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                     )
                     .map((d) => {
                       const isSelected = selectedDoctorIdsForHoliday.includes(d.id);
+<<<<<<< HEAD
                       const dUniqueId =
                         d.uniqueDoctorId || `DOC-${d.id.replace('doc-', '').toUpperCase()}`;
+=======
+                      const dUniqueId = d.uniqueDoctorId || `DOC-${d.id.replace('doc-', '').toUpperCase()}`;
+>>>>>>> origin/main
 
                       return (
                         <label
                           key={d.id}
+<<<<<<< HEAD
+=======
+                          onClick={() => handleToggleSelectDoctor(d.id)}
+>>>>>>> origin/main
                           className={`flex items-center justify-between p-2 rounded-lg border transition-all cursor-pointer ${
                             isSelected
                               ? 'bg-amber-50/90 border-amber-300 shadow-2xs'
@@ -1317,7 +1731,11 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                             <input
                               type="checkbox"
                               checked={isSelected}
+<<<<<<< HEAD
                               onChange={() => handleToggleSelectDoctor(d.id)}
+=======
+                              onChange={() => {}}
+>>>>>>> origin/main
                               className="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500 accent-amber-600"
                             />
                             <img
@@ -1339,6 +1757,10 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                 </div>
               </div>
 
+<<<<<<< HEAD
+=======
+              {/* Submit Buttons */}
+>>>>>>> origin/main
               <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
                 <button
                   type="button"
@@ -1349,6 +1771,7 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                 </button>
                 <button
                   type="submit"
+<<<<<<< HEAD
                   disabled={
                     isSubmitting ||
                     selectedDoctorIdsForHoliday.length === 0 ||
@@ -1362,6 +1785,13 @@ export const AdminDoctorManagement: React.FC<AdminDoctorManagementProps> = ({
                       ? 'Saving...'
                       : `Mark Holiday (${selectedDoctorIdsForHoliday.length})`}
                   </span>
+=======
+                  disabled={selectedDoctorIdsForHoliday.length === 0 || !occasionReason.trim()}
+                  className="px-5 py-2 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <CalendarDays className="w-4 h-4" />
+                  <span>Mark Holiday ({selectedDoctorIdsForHoliday.length})</span>
+>>>>>>> origin/main
                 </button>
               </div>
             </form>

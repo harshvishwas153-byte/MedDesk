@@ -12,26 +12,55 @@ import {
 } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { PWAInstallButton } from './PWAInstallButton';
+<<<<<<< HEAD
 import { NotificationItem, User, ViewMode } from '../../types';
 import { MedicareApiClient } from '../../services/api';
+=======
+import { NotificationItem, User, UserRole, ViewMode } from '../../types';
+import { MedicareApiClient } from '../../services/api';
+import { collection, query, onSnapshot } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+>>>>>>> origin/main
 
 interface HeaderProps {
   currentUser: User;
   currentView?: ViewMode;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
+<<<<<<< HEAD
+=======
+  onRoleChange?: (role: UserRole) => void;
+>>>>>>> origin/main
   onNavigate: (view: ViewMode) => void;
   onToggleMobileSidebar?: () => void;
   searchPlaceholder?: string;
   onSearch?: (query: string) => void;
+<<<<<<< HEAD
   onLogout?: () => void | Promise<void>;
+=======
+  onLogout?: () => void;
+  onOpenJavaRubric?: () => void;
+>>>>>>> origin/main
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentUser,
+<<<<<<< HEAD
   onNavigate,
   onToggleMobileSidebar,
   onLogout,
+=======
+  currentView,
+  searchQuery,
+  onSearchChange,
+  onRoleChange,
+  onNavigate,
+  onToggleMobileSidebar,
+  searchPlaceholder,
+  onSearch,
+  onLogout,
+  onOpenJavaRubric,
+>>>>>>> origin/main
 }) => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -44,6 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
       setNotifications(MedicareApiClient.getNotifications(currentUser));
     };
     loadNotifs();
+<<<<<<< HEAD
     return MedicareApiClient.subscribe(loadNotifs);
   }, [currentUser]);
 
@@ -56,6 +86,37 @@ export const Header: React.FC<HeaderProps> = ({
 
   const handleNotifClick = async (notif: NotificationItem) => {
     await MedicareApiClient.markNotificationRead(notif.id, currentUser);
+=======
+    const unsubscribe = MedicareApiClient.subscribe(loadNotifs);
+
+    try {
+      const q = query(collection(db, 'notifications'));
+      const unsubCloud = onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+          loadNotifs();
+        }
+      });
+      return () => {
+        unsubscribe();
+        unsubCloud();
+      };
+    } catch {
+      return unsubscribe;
+    }
+  }, [currentUser]);
+
+  const unreadCount = notifications.filter(
+    (n) => !n.read && !n.title.toLowerCase().includes('spring boot')
+  ).length;
+
+  const handleMarkAllRead = () => {
+    const updated = MedicareApiClient.markAllNotificationsRead(currentUser);
+    setNotifications(updated);
+  };
+
+  const handleNotifClick = (notif: NotificationItem) => {
+    MedicareApiClient.markNotificationRead(notif.id, currentUser);
+>>>>>>> origin/main
     setIsNotifOpen(false);
     if (notif.actionView) {
       onNavigate(notif.actionView);
@@ -85,17 +146,49 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const getRoleSubtitle = (user: User) => {
+<<<<<<< HEAD
     if (user.role === 'DOCTOR') return user.specialty || 'Specialist Physician';
+=======
+    if (user.role === 'DOCTOR') return 'Cardiologist';
+>>>>>>> origin/main
     if (user.role === 'ADMIN') return 'Administrator';
     return 'Patient';
   };
 
+<<<<<<< HEAD
   const handleDoLogout = async () => {
     setIsProfileMenuOpen(false);
     if (onLogout) {
       await onLogout();
     } else {
       await MedicareApiClient.logout();
+=======
+  const getDynamicPlaceholder = () => {
+    if (searchPlaceholder) return searchPlaceholder;
+    if (currentUser.role === 'ADMIN') return 'Search users, doctors...';
+    if (currentUser.role === 'DOCTOR') return 'Search patients, appointments...';
+    return 'Search doctors, appointments...';
+  };
+
+  const handleRoleSelect = (role: UserRole) => {
+    if (onRoleChange) {
+      onRoleChange(role);
+    } else {
+      const switched = MedicareApiClient.switchUserRole(role);
+      if (role === 'ADMIN') onNavigate('admin-dashboard');
+      else if (role === 'DOCTOR') onNavigate('doctor-dashboard');
+      else onNavigate('patient-dashboard');
+    }
+    setIsProfileMenuOpen(false);
+  };
+
+  const handleDoLogout = () => {
+    setIsProfileMenuOpen(false);
+    if (onLogout) {
+      onLogout();
+    } else {
+      MedicareApiClient.logout();
+>>>>>>> origin/main
       onNavigate('landing');
     }
   };

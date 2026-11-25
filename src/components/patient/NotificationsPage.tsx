@@ -15,6 +15,12 @@ import {
 import { NotificationItem, User, ViewMode } from '../../types';
 import { MedicareApiClient } from '../../services/api';
 
+<<<<<<< HEAD
+=======
+import { collection, query, onSnapshot } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+
+>>>>>>> origin/main
 interface NotificationsPageProps {
   currentUser?: User;
   onNavigate: (view: ViewMode) => void;
@@ -33,6 +39,7 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
       setNotifications(MedicareApiClient.getNotifications(currentUser));
     };
     loadNotifs();
+<<<<<<< HEAD
     return MedicareApiClient.subscribe(loadNotifs);
   }, [currentUser]);
 
@@ -44,6 +51,35 @@ export const NotificationsPage: React.FC<NotificationsPageProps> = ({
   const handleMarkRead = async (id: string) => {
     const updated = await MedicareApiClient.markNotificationRead(id, currentUser);
     setNotifications(updated);
+=======
+    const unsubscribe = MedicareApiClient.subscribe(loadNotifs);
+
+    try {
+      const q = query(collection(db, 'notifications'));
+      const unsubCloud = onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+          loadNotifs();
+        }
+      });
+      return () => {
+        unsubscribe();
+        unsubCloud();
+      };
+    } catch {
+      return unsubscribe;
+    }
+  }, [currentUser]);
+
+  const handleMarkAllRead = () => {
+    const updated = MedicareApiClient.markAllNotificationsRead(currentUser);
+    setNotifications(updated);
+  };
+
+  const handleMarkRead = (id: string) => {
+    const list = notifications.map((n) => (n.id === id ? { ...n, read: true } : n));
+    MedicareApiClient.markNotificationRead?.(id, currentUser);
+    setNotifications(list);
+>>>>>>> origin/main
   };
 
   const handleNotificationClick = (notif: NotificationItem) => {

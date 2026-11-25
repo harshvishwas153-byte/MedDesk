@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useMemo } from 'react';
+=======
+import React, { useState } from 'react';
+>>>>>>> origin/main
 import {
   Calendar,
   Users,
@@ -7,12 +11,21 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+<<<<<<< HEAD
   Check,
   MessageSquare,
   Save,
   AlertCircle,
 } from 'lucide-react';
 import { Appointment, User, ViewMode } from '../../types';
+=======
+  FileText,
+  Check,
+  MessageSquare,
+  Phone,
+} from 'lucide-react';
+import { Appointment, Doctor, User, ViewMode } from '../../types';
+>>>>>>> origin/main
 import { MedicareApiClient } from '../../services/api';
 
 interface DoctorDashboardProps {
@@ -20,6 +33,7 @@ interface DoctorDashboardProps {
   onNavigate: (view: ViewMode) => void;
 }
 
+<<<<<<< HEAD
 function parseAppointmentDate(dateStr: string): Date | null {
   if (!dateStr) return null;
   const cleaned = dateStr.replace(/^[A-Za-z]+,\s*/, '');
@@ -27,10 +41,13 @@ function parseAppointmentDate(dateStr: string): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
+=======
+>>>>>>> origin/main
 export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
   currentUser,
   onNavigate,
 }) => {
+<<<<<<< HEAD
   const [doctorAppointments, setDoctorAppointments] = useState<Appointment[]>(() =>
     MedicareApiClient.getAppointmentsByDoctor(currentUser.id)
   );
@@ -103,6 +120,69 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
       setModalError((err as Error).message || 'Failed to update appointment.');
     } finally {
       setIsUpdating(false);
+=======
+  const [appointments, setAppointments] = useState<Appointment[]>(
+    MedicareApiClient.getAppointments()
+  );
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedDate, setSelectedDate] = useState<number>(12);
+  const [currentMonth, setCurrentMonth] = useState('October 2024');
+  const [clinicalNotes, setClinicalNotes] = useState('');
+  const [prescriptionText, setPrescriptionText] = useState('');
+  const [mobileTab, setMobileTab] = useState<'queue' | 'overview' | 'schedule'>('queue');
+
+  // Filter doctor's appointments dynamically from real database
+  const doctorAppointments = appointments.filter(
+    (apt) => apt.doctorId === currentUser.id || apt.doctorName === currentUser.name
+  );
+
+  // Helper to identify if an appointment is for today
+  const getTodayFormatted = () => {
+    const d = new Date();
+    const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const day = d.getDate();
+    const monthShort = d.toLocaleDateString('en-US', { month: 'short' });
+    const year = d.getFullYear();
+    return {
+      full: `${dayName}, ${day} ${monthShort} ${year}`,
+      simple: `${day} ${monthShort} ${year}`
+    };
+  };
+
+  const today = getTodayFormatted();
+  const isToday = (dateStr: string) => {
+    if (!dateStr) return false;
+    const cleanStr = dateStr.trim().toLowerCase();
+    const parsedTodayStr = new Date().toDateString();
+    const parsedAptStr = new Date(dateStr).toDateString();
+    
+    return cleanStr === today.full.toLowerCase() || 
+           cleanStr === today.simple.toLowerCase() ||
+           cleanStr.includes(today.simple.toLowerCase()) ||
+           cleanStr.includes(today.full.toLowerCase()) ||
+           parsedAptStr === parsedTodayStr;
+  };
+
+  // Filter today's appointments dynamically
+  const todayAppointments = doctorAppointments.filter((apt) => isToday(apt.date));
+
+  // Compute metrics dynamically from actual database records
+  const todayOpdCount = todayAppointments.length;
+  const uniquePatients = new Set(doctorAppointments.map((apt) => apt.patientId));
+  const totalPatientsCount = uniquePatients.size;
+  const pendingCount = todayAppointments.filter(
+    (apt) => apt.status === 'Pending' || apt.status === 'Upcoming'
+  ).length;
+  const completedCount = todayAppointments.filter(
+    (apt) => apt.status === 'Completed'
+  ).length;
+
+  const handleStatusChange = (appointmentId: string, newStatus: Appointment['status']) => {
+    const updated = MedicareApiClient.updateAppointmentStatus(appointmentId, newStatus);
+    setAppointments(updated);
+    if (selectedAppointment && selectedAppointment.id === appointmentId) {
+      setSelectedAppointment({ ...selectedAppointment, status: newStatus });
+>>>>>>> origin/main
     }
   };
 
@@ -114,13 +194,17 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
         return 'bg-amber-50 text-amber-700 border-amber-200';
       case 'Upcoming':
         return 'bg-blue-50 text-blue-700 border-blue-200';
+<<<<<<< HEAD
       case 'Cancelled':
         return 'bg-rose-50 text-rose-700 border-rose-200';
+=======
+>>>>>>> origin/main
       default:
         return 'bg-slate-50 text-slate-700 border-slate-200';
     }
   };
 
+<<<<<<< HEAD
   const daysInActiveMonth = new Date(activeYear, activeMonth + 1, 0).getDate();
   const firstDayOffset = new Date(activeYear, activeMonth, 1).getDay();
   const currentMonthLabel = new Date(activeYear, activeMonth, 1).toLocaleDateString('en-US', {
@@ -181,6 +265,12 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
     todayAppointments.length > 0
       ? todayAppointments
       : doctorAppointments.filter((a) => a.status !== 'Cancelled').slice(0, 8);
+=======
+  // Calendar dates generation for October 2024 (starts on Tuesday)
+  // September spillover: 29, 30
+  // October: 1 to 31
+  const daysInOctober = Array.from({ length: 31 }, (_, i) => i + 1);
+>>>>>>> origin/main
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -194,7 +284,11 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
+<<<<<<< HEAD
           OPD Queue ({queueAppointments.length})
+=======
+          OPD Queue ({todayAppointments.length})
+>>>>>>> origin/main
         </button>
         <button
           onClick={() => setMobileTab('overview')}
@@ -218,15 +312,27 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
         </button>
       </div>
 
+<<<<<<< HEAD
       {/* Stat Cards Row */}
       <div className={`${mobileTab === 'overview' ? 'grid' : 'hidden md:grid'} grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-5`}>
+=======
+
+
+      {/* 1. Stat Cards Row: Compact 2x2 on mobile, 4-col on desktop */}
+      <div className={`${mobileTab === 'overview' ? 'grid' : 'hidden md:grid'} grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-5`}>
+        {/* Today's Appointments */}
+>>>>>>> origin/main
         <div
           onClick={() => onNavigate('doctor-appointments')}
           className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center justify-between"
         >
           <div>
             <span className="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-0.5 sm:mb-1 truncate">
+<<<<<<< HEAD
               Today&apos;s OPD
+=======
+              Today's OPD
+>>>>>>> origin/main
             </span>
             <span className="text-xl sm:text-3xl font-extrabold text-slate-900 tabular-nums">{todayOpdCount}</span>
           </div>
@@ -235,6 +341,10 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* Total Patients */}
+>>>>>>> origin/main
         <div
           onClick={() => onNavigate('doctor-patients')}
           className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center justify-between"
@@ -248,10 +358,18 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
           </div>
         </div>
 
+<<<<<<< HEAD
         <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
           <div>
             <span className="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-0.5 sm:mb-1 truncate">
               Active Queue
+=======
+        {/* Pending Appointments */}
+        <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
+          <div>
+            <span className="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-0.5 sm:mb-1 truncate">
+              Pending
+>>>>>>> origin/main
             </span>
             <span className="text-xl sm:text-3xl font-extrabold text-slate-900 tabular-nums">{pendingCount}</span>
           </div>
@@ -260,6 +378,10 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        {/* Completed Today */}
+>>>>>>> origin/main
         <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
           <div>
             <span className="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-0.5 sm:mb-1 truncate">Completed</span>
@@ -271,8 +393,14 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* Appointments Queue & Interactive Schedule Calendar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+=======
+      {/* 2. Middle Row: Today's Appointments & My Schedule Calendar matching Screenshot 5 */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        {/* Left Column: Today's Appointments Table */}
+>>>>>>> origin/main
         <div
           className={`lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden flex flex-col justify-between ${
             mobileTab === 'queue' ? 'block' : 'hidden md:flex'
@@ -281,6 +409,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
           <div>
             <div className="p-4 sm:p-6 pb-3 sm:pb-4 flex items-center justify-between border-b border-slate-100 sm:border-b-0">
               <div>
+<<<<<<< HEAD
                 <h3 className="text-sm font-bold text-slate-900">
                   {todayAppointments.length > 0 ? "Today's Appointments" : 'OPD Appointment Queue'}
                 </h3>
@@ -307,6 +436,45 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                   <div
                     key={apt.id}
                     onClick={() => openConsultModal(apt)}
+=======
+                <h3 className="text-sm font-bold text-slate-900">Today's Appointments</h3>
+                <p className="text-[11px] text-slate-400">Cardiology OPD · Room 304</p>
+              </div>
+              <button
+                onClick={() => onNavigate('doctor-appointments')}
+                className="text-xs font-semibold text-rose-600 hover:text-rose-700 cursor-pointer"
+              >
+                View Full Queue
+              </button>
+            </div>
+
+            {/* Mobile Fluid Cards: No Horizontal Scrolling */}
+            <div className="sm:hidden divide-y divide-slate-100">
+              {todayAppointments.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 font-medium text-xs">
+                  No appointments booked for today.
+                </div>
+              ) : (
+                todayAppointments.map((apt) => (
+                  <div
+                    key={apt.id}
+                    onClick={() => {
+                      setSelectedAppointment({
+                        id: apt.id,
+                        patientId: apt.patientId,
+                        patientName: apt.patientName,
+                        doctorId: apt.doctorId || currentUser.id,
+                        doctorName: apt.doctorName || currentUser.name,
+                        department: apt.department || 'General Medicine',
+                        hospital: apt.hospital || 'MedDesk Hospital',
+                        date: apt.date,
+                        time: apt.time,
+                        reason: apt.reason,
+                        status: apt.status,
+                        fee: apt.fee || 500,
+                      });
+                    }}
+>>>>>>> origin/main
                     className="p-3.5 flex items-center justify-between gap-3 hover:bg-slate-50 transition-colors cursor-pointer"
                   >
                     <div className="min-w-0">
@@ -314,7 +482,11 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                         <span className="text-xs font-bold text-slate-900 truncate">{apt.patientName}</span>
                         <span className="text-[10px] font-mono text-slate-400 tabular-nums">{apt.time}</span>
                       </div>
+<<<<<<< HEAD
                       <p className="text-[11px] text-slate-500 truncate">{apt.date} · {apt.reason}</p>
+=======
+                      <p className="text-[11px] text-slate-500 truncate">{apt.reason}</p>
+>>>>>>> origin/main
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <span
@@ -338,7 +510,11 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
               <table className="w-full min-w-[540px] text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-y border-slate-200 bg-slate-50/80 text-slate-500 font-semibold">
+<<<<<<< HEAD
                     <th className="py-3 px-5">Schedule</th>
+=======
+                    <th className="py-3 px-5">Time</th>
+>>>>>>> origin/main
                     <th className="py-3 px-4">Patient Name</th>
                     <th className="py-3 px-4">Reason</th>
                     <th className="py-3 px-4">Status</th>
@@ -346,6 +522,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
+<<<<<<< HEAD
                   {queueAppointments.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="py-8 text-center text-slate-500 font-medium">
@@ -358,6 +535,19 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                         <td className="py-3.5 px-5 font-semibold text-slate-900 tabular-nums">
                           <div>{apt.time}</div>
                           <div className="text-[10px] text-slate-400 font-normal">{apt.date}</div>
+=======
+                  {todayAppointments.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-slate-500 font-medium">
+                        No appointments booked for today.
+                      </td>
+                    </tr>
+                  ) : (
+                    todayAppointments.map((apt) => (
+                      <tr key={apt.id} className="hover:bg-slate-50/60 transition-colors">
+                        <td className="py-3.5 px-5 font-semibold text-slate-900 tabular-nums">
+                          {apt.time}
+>>>>>>> origin/main
                         </td>
                         <td className="py-3.5 px-4 font-semibold text-slate-800">
                           {apt.patientName}
@@ -383,7 +573,26 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                               <span>Assist</span>
                             </button>
                             <button
+<<<<<<< HEAD
                               onClick={() => openConsultModal(apt)}
+=======
+                              onClick={() => {
+                                setSelectedAppointment({
+                                  id: apt.id,
+                                  patientId: apt.patientId,
+                                  patientName: apt.patientName,
+                                  doctorId: apt.doctorId || currentUser.id,
+                                  doctorName: apt.doctorName || currentUser.name,
+                                  department: apt.department || 'General Medicine',
+                                  hospital: apt.hospital || 'MedDesk Hospital',
+                                  date: apt.date,
+                                  time: apt.time,
+                                  reason: apt.reason,
+                                  status: apt.status,
+                                  fee: apt.fee || 500,
+                                });
+                              }}
+>>>>>>> origin/main
                               className="px-2.5 py-1 bg-white hover:bg-slate-100 text-slate-700 font-semibold border border-slate-200 rounded-lg transition-colors cursor-pointer text-xs"
                             >
                               View
@@ -399,6 +608,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
           </div>
 
           <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+<<<<<<< HEAD
             <span>
               {nextUpcomingToday
                 ? `Next consult today: ${nextUpcomingToday.time} (${nextUpcomingToday.patientName})`
@@ -407,13 +617,23 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
             <button
               onClick={() => onNavigate('doctor-schedule')}
               className="text-rose-600 font-semibold hover:underline cursor-pointer"
+=======
+            <span>Next consult starts at 02:00 PM</span>
+            <button
+              onClick={() => onNavigate('doctor-schedule')}
+              className="text-rose-600 font-semibold hover:underline"
+>>>>>>> origin/main
             >
               Configure Slot Timings →
             </button>
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Right Column: Live Schedule Calendar Widget */}
+=======
+        {/* Right Column: My Schedule Calendar Widget matching Screenshot 5 */}
+>>>>>>> origin/main
         <div
           className={`lg:col-span-5 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between ${
             mobileTab === 'schedule' ? 'block' : 'hidden md:flex'
@@ -424,6 +644,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
               <h3 className="text-sm font-bold text-slate-900">My Schedule</h3>
               <div className="flex items-center gap-1.5">
                 <button
+<<<<<<< HEAD
                   type="button"
                   onClick={handlePrevMonth}
                   aria-label="Previous month"
@@ -437,12 +658,27 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                   onClick={handleNextMonth}
                   aria-label="Next month"
                   className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900 cursor-pointer"
+=======
+                  aria-label="Previous month"
+                  className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-xs font-bold text-slate-800">{currentMonth}</span>
+                <button
+                  aria-label="Next month"
+                  className="p-1 hover:bg-slate-100 rounded text-slate-500 hover:text-slate-900"
+>>>>>>> origin/main
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
+<<<<<<< HEAD
+=======
+            {/* Calendar Grid */}
+>>>>>>> origin/main
             <div className="space-y-2">
               <div className="grid grid-cols-7 text-center text-[11px] font-semibold text-slate-400 py-1">
                 <span>Sun</span>
@@ -454,6 +690,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                 <span>Sat</span>
               </div>
 
+<<<<<<< HEAD
               <div className="grid grid-cols-7 gap-1 text-center text-xs">
                 {Array.from({ length: firstDayOffset }, (_, i) => (
                   <span key={`empty-${i}`} className="p-2" />
@@ -462,11 +699,25 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                 {Array.from({ length: daysInActiveMonth }, (_, i) => i + 1).map((day) => {
                   const isSelected = day === selectedDate;
                   const hasAppointments = (bookedCountByDay.get(day) || 0) > 0;
+=======
+              {/* Dates Grid */}
+              <div className="grid grid-cols-7 gap-1 text-center text-xs">
+                {/* Empty cells for padding (October 2024 begins on Tuesday -> 2 offset cells) */}
+                <span className="p-2 text-slate-300 font-mono text-[11px]">29</span>
+                <span className="p-2 text-slate-300 font-mono text-[11px]">30</span>
+
+                {daysInOctober.map((day) => {
+                  const isSelected = day === selectedDate;
+                  const hasAppointments = [5, 8, 12, 16, 20, 24].includes(day);
+>>>>>>> origin/main
 
                   return (
                     <button
                       key={day}
+<<<<<<< HEAD
                       type="button"
+=======
+>>>>>>> origin/main
                       onClick={() => setSelectedDate(day)}
                       className={`h-8 w-8 mx-auto rounded-full flex items-center justify-center font-medium transition-all text-xs cursor-pointer relative ${
                         isSelected
@@ -485,6 +736,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
             </div>
           </div>
 
+<<<<<<< HEAD
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
               <span className="text-slate-400 block text-[11px]">Selected Date</span>
@@ -494,6 +746,16 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
               {selectedDayAppointments.length > 0
                 ? `${selectedDayAppointments.length} Consultation${selectedDayAppointments.length === 1 ? '' : 's'} Booked`
                 : 'Available for Booking'}
+=======
+          {/* Schedule summary for selected date */}
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div>
+              <span className="text-slate-400 block text-[11px]">Selected Date</span>
+              <span className="font-bold text-slate-800">{selectedDate} October 2024</span>
+            </div>
+            <span className="px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg font-semibold text-[11px]">
+              {selectedDate === 12 ? '8 Consultations Booked' : 'Available for Booking'}
+>>>>>>> origin/main
             </span>
           </div>
         </div>
@@ -507,18 +769,27 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
               <div>
                 <h4 className="text-sm font-bold text-slate-900">Patient Consultation</h4>
                 <p className="text-[11px] text-slate-500">
+<<<<<<< HEAD
                   {selectedAppointment.patientName} · {selectedAppointment.date} at {selectedAppointment.time}
+=======
+                  {selectedAppointment.patientName} · {selectedAppointment.time}
+>>>>>>> origin/main
                 </p>
               </div>
               <button
                 onClick={() => setSelectedAppointment(null)}
+<<<<<<< HEAD
                 className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+=======
+                className="text-slate-400 hover:text-slate-600 p-1"
+>>>>>>> origin/main
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
+<<<<<<< HEAD
               {modalError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -526,6 +797,8 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                 </div>
               )}
 
+=======
+>>>>>>> origin/main
               <div className="p-3 bg-slate-50 rounded-xl text-xs space-y-1">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Chief Complaint:</span>
@@ -563,6 +836,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                 />
               </div>
 
+<<<<<<< HEAD
               <div className="pt-2 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap gap-2">
                   <button
@@ -580,13 +854,39 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 disabled:bg-slate-300 text-white text-xs font-semibold rounded-lg cursor-pointer"
                   >
                     <Save className="w-3.5 h-3.5" /> Save Notes
+=======
+              <div className="pt-2 flex justify-between gap-2">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      handleStatusChange(selectedAppointment.id, 'Completed');
+                      setSelectedAppointment(null);
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg shadow-2xs"
+                  >
+                    <Check className="w-3.5 h-3.5" /> Mark Completed
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleStatusChange(selectedAppointment.id, 'Pending');
+                      setSelectedAppointment(null);
+                    }}
+                    className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 text-xs font-semibold rounded-lg border border-amber-200"
+                  >
+                    Set Pending
+>>>>>>> origin/main
                   </button>
                 </div>
 
                 <button
+<<<<<<< HEAD
                   type="button"
                   onClick={() => setSelectedAppointment(null)}
                   className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer"
+=======
+                  onClick={() => setSelectedAppointment(null)}
+                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg"
+>>>>>>> origin/main
                 >
                   Close
                 </button>

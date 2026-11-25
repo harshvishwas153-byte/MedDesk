@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class MedicalRecordDAO {
 
+<<<<<<< HEAD
     private MedicalRecord mapRow(ResultSet rs) throws SQLException {
         MedicalRecord r = new MedicalRecord();
         r.setId(rs.getString("record_id"));
@@ -43,10 +44,41 @@ public class MedicalRecordDAO {
                 while (rs.next()) {
                     list.add(mapRow(rs));
                 }
+=======
+    public List<MedicalRecord> findByPatientId(String patientId) throws DatabaseException {
+        String sql = "SELECT * FROM medical_records WHERE patient_id = ? ORDER BY created_at DESC";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<MedicalRecord> list = new ArrayList<>();
+
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, patientId);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                MedicalRecord r = new MedicalRecord();
+                r.setId(rs.getString("record_id"));
+                r.setPatientId(rs.getString("patient_id"));
+                r.setTitle(rs.getString("title"));
+                r.setCategory(rs.getString("category"));
+                r.setDate(rs.getString("record_date"));
+                r.setDoctorName(rs.getString("doctor_name"));
+                r.setFacility(rs.getString("facility"));
+                r.setFileType(rs.getString("file_type"));
+                r.setFileSize(rs.getString("file_size"));
+                r.setNotes(rs.getString("clinical_notes"));
+                r.setDownloadUrl(rs.getString("download_url"));
+                r.setCreatedAt(rs.getTimestamp("created_at"));
+                list.add(r);
+>>>>>>> origin/main
             }
             return list;
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving medical records: " + e.getMessage(), e);
+<<<<<<< HEAD
         }
     }
 
@@ -78,15 +110,29 @@ public class MedicalRecordDAO {
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error retrieving medical record by ID: " + e.getMessage(), e);
+=======
+        } finally {
+            DBConnection.close(rs, stmt, conn);
+>>>>>>> origin/main
         }
     }
 
     public boolean createRecord(MedicalRecord record) throws DatabaseException {
         String sql = "INSERT INTO medical_records (record_id, patient_id, title, category, record_date, "
+<<<<<<< HEAD
                 + "doctor_name, facility, file_type, file_size, clinical_notes, download_url) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+=======
+                + "doctor_name, facility, file_type, file_size, clinical_notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement(sql);
+>>>>>>> origin/main
             stmt.setString(1, record.getId());
             stmt.setString(2, record.getPatientId());
             stmt.setString(3, record.getTitle());
@@ -97,6 +143,7 @@ public class MedicalRecordDAO {
             stmt.setString(8, record.getFileType());
             stmt.setString(9, record.getFileSize());
             stmt.setString(10, record.getNotes());
+<<<<<<< HEAD
             stmt.setString(11, record.getDownloadUrl());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -112,6 +159,14 @@ public class MedicalRecordDAO {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new DatabaseException("Error deleting medical record: " + e.getMessage(), e);
+=======
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new DatabaseException("Error creating medical record: " + e.getMessage(), e);
+        } finally {
+            DBConnection.close(stmt, conn);
+>>>>>>> origin/main
         }
     }
 }
