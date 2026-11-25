@@ -1,0 +1,155 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered portal user profile (Patient, Doctor, or Admin). Never stores plaintext passwords or credential secrets.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["PATIENT", "DOCTOR", "ADMIN"] },
+        "avatar": { "type": "string" },
+        "phone": { "type": "string" },
+        "gender": { "type": "string" },
+        "bloodGroup": { "type": "string" },
+        "status": { "type": "string", "enum": ["Active", "Inactive"] },
+        "uniqueDoctorId": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role", "status"]
+    },
+    "Doctor": {
+      "title": "Doctor",
+      "description": "Public clinical specialist directory entry without sensitive credentials.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "specialty": { "type": "string" },
+        "department": { "type": "string" },
+        "hospital": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "integer" },
+        "consultationFee": { "type": "number" },
+        "experienceYears": { "type": "integer" },
+        "availableDays": { "type": "array", "items": { "type": "string" } },
+        "timeSlots": { "type": "array", "items": { "type": "string" } },
+        "about": { "type": "string" },
+        "education": { "type": "string" },
+        "uniqueDoctorId": { "type": "string" }
+      },
+      "required": ["id", "name", "specialty", "department", "hospital", "consultationFee"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Scheduled clinical consultation between a patient and a doctor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "doctorName": { "type": "string" },
+        "department": { "type": "string" },
+        "hospital": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "reason": { "type": "string" },
+        "status": { "type": "string", "enum": ["Upcoming", "Completed", "Pending", "Cancelled"] },
+        "fee": { "type": "number" },
+        "notes": { "type": "string" },
+        "prescription": { "type": "string" }
+      },
+      "required": ["id", "patientId", "doctorId", "date", "time", "status", "fee"]
+    },
+    "MedicalRecord": {
+      "title": "MedicalRecord",
+      "description": "Sensitive patient electronic health record (EHR) document.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string" },
+        "category": { "type": "string", "enum": ["Prescriptions", "Test Reports", "Consultations"] },
+        "fileType": { "type": "string" },
+        "fileSize": { "type": "string" },
+        "doctorName": { "type": "string" },
+        "facility": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "patientId", "title", "category", "date"]
+    },
+    "ConsultationSession": {
+      "title": "ConsultationSession",
+      "description": "Post-visit follow-up messaging thread between patient and doctor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "status": { "type": "string", "enum": ["Ongoing", "Completed", "Waiting", "Expired"] },
+        "chiefComplaint": { "type": "string" }
+      },
+      "required": ["id", "patientId", "doctorId", "status"]
+    },
+    "NotificationItem": {
+      "title": "NotificationItem",
+      "description": "User-scoped clinical or appointment alert.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "read": { "type": "boolean" },
+        "type": { "type": "string", "enum": ["appointment", "record", "chat", "system"] },
+        "recipientId": { "type": "string" }
+      },
+      "required": ["id", "title", "message", "read", "type"]
+    },
+    "DoctorSlots": {
+      "title": "DoctorSlots",
+      "description": "Configured appointment time slots per doctor and date.",
+      "type": "object",
+      "properties": {
+        "slots": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["slots"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User account profile (PII protected by owner, clinical doctor, or admin RBAC)."
+    },
+    "/doctors/{doctorId}": {
+      "schema": { "$ref": "#/entities/Doctor" },
+      "description": "Public clinical directory of verified doctors."
+    },
+    "/appointments/{appointmentId}": {
+      "schema": { "$ref": "#/entities/Appointment" },
+      "description": "Patient-doctor appointment bookings."
+    },
+    "/records/{recordId}": {
+      "schema": { "$ref": "#/entities/MedicalRecord" },
+      "description": "Sensitive patient EHR vault records."
+    },
+    "/consultations/{consultationId}": {
+      "schema": { "$ref": "#/entities/ConsultationSession" },
+      "description": "Follow-up consultation sessions."
+    },
+    "/consultation_messages/{messageId}": {
+      "schema": { "type": "object" },
+      "description": "Messages belonging to consultation sessions."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/NotificationItem" },
+      "description": "Targeted user notifications."
+    },
+    "/doctor_slots/{slotId}": {
+      "schema": { "$ref": "#/entities/DoctorSlots" },
+      "description": "Doctor daily time slot configuration."
+    }
+  }
+}

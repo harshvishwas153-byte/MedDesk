@@ -1,0 +1,216 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getUserDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function hasUserDoc() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        (hasUserDoc() && getUserDoc().data.role == 'ADMIN') ||
+        (request.auth.token.email != null &&
+          request.auth.token.email == 'harshvishwas153@gmail.com' &&
+          request.auth.token.email_verified == true)
+      );
+    }
+
+    function isDoctor() {
+      return isAuthenticated() && hasUserDoc() && getUserDoc().data.role == 'DOCTOR';
+    }
+
+    function isValidNonEmptyString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function hasNoSensitiveAuthFields(data) {
+      return !('loginPassword' in data) && !('passwordHash' in data);
+    }
+
+    function isValidUserCreate(userId) {
+      let data = request.resource.data;
+      return data.keys().hasAll(['id', 'name', 'email', 'role', 'status']) &&
+        data.id == userId &&
+        isValidNonEmptyString(data.name, 2, 120) &&
+        isValidNonEmptyString(data.email, 5, 160) &&
+        data.role == 'PATIENT' &&
+        data.status == 'Active' &&
+        hasNoSensitiveAuthFields(data);
+    }
+
+    function isValidUserUpdate(userId) {
+      let data = request.resource.data;
+      return data.id == resource.data.id &&
+        data.role == resource.data.role &&
+        data.status == resource.data.status &&
+        isValidNonEmptyString(data.name, 2, 120) &&
+        hasNoSensitiveAuthFields(data);
+    }
+
+    function isValidDoctorData() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['id', 'name', 'specialty', 'department', 'hospital', 'consultationFee']) &&
+        isValidNonEmptyString(data.id, 2, 64) &&
+        isValidNonEmptyString(data.name, 2, 120) &&
+        isValidNonEmptyString(data.specialty, 2, 100) &&
+        isValidNonEmptyString(data.department, 2, 100) &&
+        isValidNonEmptyString(data.hospital, 2, 160) &&
+        data.consultationFee is number && data.consultationFee > 0 && data.consultationFee <= 100000 &&
+        hasNoSensitiveAuthFields(data);
+    }
+
+    function isValidAppointmentCreate() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['id', 'patientId', 'doctorId', 'date', 'time', 'status', 'fee']) &&
+        isValidNonEmptyString(data.id, 3, 64) &&
+        isValidNonEmptyString(data.patientId, 2, 64) &&
+        isValidNonEmptyString(data.doctorId, 2, 64) &&
+        isValidNonEmptyString(data.date, 4, 40) &&
+        isValidNonEmptyString(data.time, 3, 30) &&
+        (data.status == 'Upcoming' || data.status == 'Pending') &&
+        data.fee is number && data.fee > 0 && data.fee <= 100000;
+    }
+
+    function isValidRecordData() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['id', 'patientId', 'title', 'category', 'date']) &&
+        isValidNonEmptyString(data.id, 3, 64) &&
+        isValidNonEmptyString(data.patientId, 2, 64) &&
+        isValidNonEmptyString(data.title, 2, 180) &&
+        (data.category in ['Prescriptions', 'Test Reports', 'Consultations']) &&
+        isValidNonEmptyString(data.date, 4, 40);
+    }
+
+    // ===============================================================
+    // Collections
+    // ===============================================================
+
+    // Connectivity probe doc (contains no PII or medical data)
+    match /test/connection {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isDoctor() || isAdmin();
+      allow create: if (isOwner(userId) && isValidUserCreate(userId)) ||
+        (isAdmin() && hasNoSensitiveAuthFields(request.resource.data));
+      allow update: if (isOwner(userId) && isValidUserUpdate(userId)) ||
+        (isAdmin() && hasNoSensitiveAuthFields(request.resource.data));
+      allow delete: if isAdmin();
+    }
+
+    match /doctors/{doctorId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidDoctorData();
+      allow delete: if isAdmin();
+    }
+
+    match /appointments/{appointmentId} {
+      allow read: if isAuthenticated() && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid ||
+        isDoctor() ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated() &&
+        (request.resource.data.patientId == request.auth.uid || isAdmin()) &&
+        isValidAppointmentCreate();
+      allow update: if isAuthenticated() &&
+        request.resource.data.patientId == resource.data.patientId &&
+        request.resource.data.doctorId == resource.data.doctorId &&
+        request.resource.data.fee == resource.data.fee &&
+        (
+          (resource.data.patientId == request.auth.uid &&
+            request.resource.data.status == 'Cancelled') ||
+          ((isDoctor() || isAdmin()) &&
+            request.resource.data.status in ['Upcoming', 'Completed', 'Pending', 'Cancelled'])
+        );
+      allow delete: if isAdmin();
+    }
+
+    match /records/{recordId} {
+      allow read: if isAuthenticated() && (
+        resource.data.patientId == request.auth.uid ||
+        isDoctor() ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated() &&
+        (request.resource.data.patientId == request.auth.uid || isDoctor() || isAdmin()) &&
+        isValidRecordData();
+      allow update: if isAuthenticated() &&
+        request.resource.data.patientId == resource.data.patientId &&
+        (isDoctor() || isAdmin()) &&
+        isValidRecordData();
+      allow delete: if isAdmin() || (isAuthenticated() && resource.data.patientId == request.auth.uid);
+    }
+
+    match /consultations/{consultationId} {
+      allow read: if isAuthenticated() && (
+        resource.data.patientId == request.auth.uid ||
+        resource.data.doctorId == request.auth.uid ||
+        isDoctor() ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated() && (
+        request.resource.data.patientId == request.auth.uid || isDoctor() || isAdmin()
+      );
+      allow update: if isAuthenticated() && (
+        resource.data.patientId == request.auth.uid ||
+        isDoctor() ||
+        isAdmin()
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /consultation_messages/{messageId} {
+      allow read: if isAuthenticated() && (
+        resource.data.senderId == request.auth.uid || isDoctor() || isAdmin()
+      );
+      allow create: if isAuthenticated() && (
+        request.resource.data.senderId == request.auth.uid || isDoctor() || isAdmin()
+      );
+      allow update, delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && (
+        resource.data.recipientId == request.auth.uid || isAdmin()
+      );
+      allow create: if isAuthenticated() &&
+        request.resource.data.keys().hasAll(['id', 'title', 'message', 'read', 'type']);
+      allow update: if isAuthenticated() && (
+        resource.data.recipientId == request.auth.uid || isAdmin()
+      );
+      allow delete: if isAuthenticated() && (
+        resource.data.recipientId == request.auth.uid || isAdmin()
+      );
+    }
+
+    match /doctor_slots/{slotId} {
+      allow read: if true;
+      allow create, update, delete: if isDoctor() || isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
