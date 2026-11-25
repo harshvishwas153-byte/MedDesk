@@ -72,7 +72,7 @@ Create a `.env` file in the root directory (you can copy `.env.example` as a sta
 ```bash
 npm run dev
 ```
-Open your browser and navigate to **`http://localhost:3000`** (or access the live preview at [https://ais-dev-pc2xeplawv67a6d6h6q26e-421796633930.asia-southeast1.run.app](https://ais-dev-pc2xeplawv67a6d6h6q26e-421796633930.asia-southeast1.run.app)).
+Open your browser and navigate to **`http://localhost:3000`** 
 
 ### **5. Build for Production**
 To generate optimized production-ready files:
