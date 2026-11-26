@@ -10,7 +10,6 @@ import {
   Pill,
   X,
   Download,
-<<<<<<< HEAD
   Paperclip,
   ArrowLeft,
   ChevronRight,
@@ -18,19 +17,6 @@ import {
 } from 'lucide-react';
 import {
   User as UserType,
-=======
-  Check,
-  Paperclip,
-  Upload,
-  ArrowLeft,
-  ChevronRight,
-  Clock,
-  CheckCircle2,
-} from 'lucide-react';
-import {
-  User as UserType,
-  Doctor,
->>>>>>> origin/main
   ConsultationSession,
   ChatMessage,
   ViewMode,
@@ -40,12 +26,6 @@ import {
 import { MedicareApiClient } from '../../services/api';
 import { generateMedicalRecordPdf } from '../../utils/pdfGenerator';
 
-<<<<<<< HEAD
-=======
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
-
->>>>>>> origin/main
 interface DoctorConsultationProps {
   currentUser: UserType;
   onNavigate: (view: ViewMode) => void;
@@ -56,20 +36,13 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
   onNavigate,
 }) => {
   const [consultations, setConsultations] = useState<ConsultationSession[]>([]);
-<<<<<<< HEAD
   const [patients, setPatients] = useState<UserType[]>(() =>
     MedicareApiClient.getUsers().filter((u) => u.role === 'PATIENT')
   );
-=======
->>>>>>> origin/main
   const [selectedConsultationId, setSelectedConsultationId] = useState<string>('c-1');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-<<<<<<< HEAD
-=======
-  // Mobile/Tablet view toggle: 'list' or 'chat'
->>>>>>> origin/main
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
   // Modals
@@ -86,17 +59,11 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
   const [rxNotes, setRxNotes] = useState('Maintain proper hydration. Rest for 24-48 hours.');
 
   // New Consultation Form State
-<<<<<<< HEAD
   const [newPatientId, setNewPatientId] = useState('');
   const [newComplaint, setNewComplaint] = useState('Report Review & Follow-up');
   const [newInitMessage, setNewInitMessage] = useState('Hello! I reviewed your recent report. Let me know if you are experiencing any symptoms.');
   const [chatError, setChatError] = useState<string | null>(null);
   const [modalError, setModalError] = useState<string | null>(null);
-=======
-  const [newPatientName, setNewPatientName] = useState('Harsh Vishwas');
-  const [newComplaint, setNewComplaint] = useState('Report Review & Follow-up');
-  const [newInitMessage, setNewInitMessage] = useState('Hello! I reviewed your recent report. Let me know if you are experiencing any symptoms.');
->>>>>>> origin/main
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
@@ -104,16 +71,12 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
   // Sync data
   const loadData = () => {
     const list = MedicareApiClient.getConsultations(currentUser.id, currentUser.role);
-<<<<<<< HEAD
     const patientList = MedicareApiClient.getUsers().filter((u) => u.role === 'PATIENT');
     setConsultations(list);
     setPatients(patientList);
     if (patientList.length > 0 && !newPatientId) {
       setNewPatientId(patientList[0].id);
     }
-=======
-    setConsultations(list);
->>>>>>> origin/main
 
     if (list.length > 0) {
       const active = list.find((c) => c.id === selectedConsultationId) || list[0];
@@ -122,36 +85,15 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
         const msgs = MedicareApiClient.getConsultationMessages(active.id);
         setMessages(msgs);
       }
-<<<<<<< HEAD
     } else {
       setMessages([]);
-=======
->>>>>>> origin/main
     }
   };
 
   useEffect(() => {
     loadData();
-<<<<<<< HEAD
     return MedicareApiClient.subscribe(loadData);
   }, [currentUser.id]);
-=======
-    const unsubscribe = MedicareApiClient.subscribe(loadData);
-
-    try {
-      const q = query(collection(db, 'consultations'));
-      const unsubCloud = onSnapshot(q, () => {
-        loadData();
-      });
-      return () => {
-        unsubscribe();
-        unsubCloud();
-      };
-    } catch {
-      return () => unsubscribe();
-    }
-  }, [currentUser]);
->>>>>>> origin/main
 
   const activeConsultation =
     consultations.find((c) => c.id === selectedConsultationId) || consultations[0];
@@ -159,27 +101,7 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
   useEffect(() => {
     const targetId = activeConsultation?.id || selectedConsultationId;
     if (!targetId) return;
-<<<<<<< HEAD
     setMessages(MedicareApiClient.getConsultationMessages(targetId));
-=======
-
-    setMessages(MedicareApiClient.getConsultationMessages(targetId));
-
-    try {
-      const q = query(
-        collection(db, 'consultation_messages'),
-        where('consultationId', '==', targetId)
-      );
-      const unsubMsgs = onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-          const cloudMsgs: ChatMessage[] = snapshot.docs.map((doc) => doc.data() as ChatMessage);
-          MedicareApiClient.mergeConsultationMessages(targetId, cloudMsgs);
-          setMessages(MedicareApiClient.getConsultationMessages(targetId));
-        }
-      });
-      return () => unsubMsgs();
-    } catch {}
->>>>>>> origin/main
   }, [selectedConsultationId, activeConsultation?.id]);
 
   const scrollToBottom = () => {
@@ -217,52 +139,16 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
     }, 100);
   };
 
-<<<<<<< HEAD
   const handleSendMessage = async (e?: React.FormEvent) => {
-=======
-  const handleSendMessage = (e?: React.FormEvent) => {
->>>>>>> origin/main
     if (e) e.preventDefault();
     if (!inputText.trim() || !activeConsultation) return;
 
     const messageText = inputText.trim();
     setInputText('');
-<<<<<<< HEAD
     setChatError(null);
 
     try {
       await MedicareApiClient.sendConsultationMessage({
-=======
-
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    const optimisticMsg: ChatMessage = {
-      id: `msg-${Date.now()}`,
-      consultationId: activeConsultation.id,
-      senderId: currentUser.id,
-      senderRole: 'DOCTOR',
-      senderName: currentUser.name,
-      senderAvatar: currentUser.avatar,
-      text: messageText,
-      timestamp: timeStr,
-    };
-
-    // 1. INSTANT optimistic state update (0ms delay!)
-    setMessages((prev) => {
-      if (prev.some((m) => m.id === optimisticMsg.id || (m.text === messageText && m.timestamp === timeStr))) {
-        return prev;
-      }
-      return [...prev, optimisticMsg];
-    });
-
-    // 2. Immediate scroll to bottom
-    scrollToBottom();
-
-    // 3. Persist asynchronously in background
-    setTimeout(() => {
-      MedicareApiClient.sendConsultationMessage({
->>>>>>> origin/main
         consultationId: activeConsultation.id,
         senderId: currentUser.id,
         senderRole: 'DOCTOR',
@@ -270,21 +156,16 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
         senderAvatar: currentUser.avatar,
         text: messageText,
       });
-<<<<<<< HEAD
       scrollToBottom();
     } catch (err) {
       setInputText(messageText);
       setChatError((err as Error).message || 'Failed to send message.');
     }
-=======
-    }, 0);
->>>>>>> origin/main
   };
 
   const handleSendPrescriptionOrReport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeConsultation) return;
-<<<<<<< HEAD
     setModalError(null);
 
     if (docAttachmentType === 'prescription') {
@@ -292,11 +173,6 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
         setModalError('Diagnosis is required.');
         return;
       }
-=======
-
-    if (docAttachmentType === 'prescription') {
-      if (!rxDiagnosis.trim()) return;
->>>>>>> origin/main
 
       try {
         await MedicareApiClient.issuePrescriptionFromConsultation({
@@ -317,79 +193,44 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
           notes: rxNotes.trim(),
         });
       } catch (err) {
-<<<<<<< HEAD
         setModalError((err as Error).message || 'Failed to send prescription.');
-=======
-        console.error(err);
->>>>>>> origin/main
         return;
       }
     } else {
       try {
-<<<<<<< HEAD
         const record = await MedicareApiClient.uploadRecord({
           patientId: activeConsultation.patientId,
           title: rxDiagnosis.trim() || 'Doctor Clinical Advice',
-=======
-        // General Report / Clinical Summary
-        const record = await MedicareApiClient.uploadRecord({
-          patientId: activeConsultation.patientId,
-          title: rxDiagnosis || 'Doctor Clinical Advice',
->>>>>>> origin/main
           date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
           category: 'Consultations',
           fileType: 'PDF',
           fileSize: '1.2 MB',
           doctorName: currentUser.name,
-<<<<<<< HEAD
           facility: currentUser.hospital || 'MedDesk Clinic',
           notes: rxNotes.trim() || 'Doctor shared clinical summary',
         });
 
         await MedicareApiClient.sendConsultationMessage({
-=======
-          facility: 'MedDesk Clinic',
-          notes: rxNotes || 'Doctor shared clinical summary',
-        });
-
-        MedicareApiClient.sendConsultationMessage({
->>>>>>> origin/main
           consultationId: activeConsultation.id,
           senderId: currentUser.id,
           senderRole: 'DOCTOR',
           senderName: currentUser.name,
           senderAvatar: currentUser.avatar,
-<<<<<<< HEAD
           text: `📄 Attached Clinical Summary: ${rxDiagnosis.trim() || 'Clinical Advice'}`,
           attachments: [
             {
               type: 'report',
               title: rxDiagnosis.trim() || 'Doctor Clinical Summary',
-=======
-          text: `📄 Attached Clinical Summary: ${rxDiagnosis || 'Clinical Advice'}`,
-          attachments: [
-            {
-              type: 'report',
-              title: rxDiagnosis || 'Doctor Clinical Summary',
->>>>>>> origin/main
               fileName: 'Clinical_Summary.pdf',
               fileType: 'PDF',
               fileSize: '1.2 MB',
               recordId: record.id,
-<<<<<<< HEAD
               notes: rxNotes.trim(),
-=======
-              notes: rxNotes,
->>>>>>> origin/main
             },
           ],
         });
       } catch (err) {
-<<<<<<< HEAD
         setModalError((err as Error).message || 'Failed to attach clinical report.');
-=======
-        console.error(err);
->>>>>>> origin/main
         return;
       }
     }
@@ -398,7 +239,6 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
     setRxDiagnosis('');
   };
 
-<<<<<<< HEAD
   const handleCreateNewConsult = async (e: React.FormEvent) => {
     e.preventDefault();
     setModalError(null);
@@ -434,33 +274,6 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
     } catch (err) {
       setModalError((err as Error).message || 'Failed to start consultation.');
     }
-=======
-  const handleCreateNewConsult = (e: React.FormEvent) => {
-    e.preventDefault();
-    const users = MedicareApiClient.getUsers().filter((u) => u.role === 'PATIENT');
-    const targetPatient = users.find((u) => u.name === newPatientName) || users[0];
-
-    const newSession = MedicareApiClient.createConsultation({
-      patientId: targetPatient ? targetPatient.id : 'usr-1',
-      patientName: targetPatient ? targetPatient.name : newPatientName,
-      patientAvatar: targetPatient?.avatar,
-      patientAge: 28,
-      patientGender: targetPatient?.gender || 'Male',
-      patientBloodGroup: targetPatient?.bloodGroup || 'O+',
-      doctorId: currentUser.id,
-      doctorName: currentUser.name,
-      doctorSpecialty: 'Specialist Physician',
-      doctorAvatar: currentUser.avatar,
-      chiefComplaint: newComplaint,
-      initialMessage: newInitMessage,
-      appointmentDate: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-      appointmentReason: newComplaint,
-    });
-
-    setShowNewConsultModal(false);
-    setSelectedConsultationId(newSession.id);
-    setMobileView('chat');
->>>>>>> origin/main
   };
 
   const handleDownloadAttachment = (att: ChatAttachment) => {
@@ -804,7 +617,6 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
               </div>
 
               {/* Bottom Chat Input Bar */}
-<<<<<<< HEAD
               <div className="p-2.5 sm:p-4 border-t border-slate-200 bg-white shrink-0 overflow-x-hidden space-y-2">
                 {chatError && (
                   <div className="px-3 py-2 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center justify-between gap-2">
@@ -814,9 +626,6 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     </button>
                   </div>
                 )}
-=======
-              <div className="p-2.5 sm:p-4 border-t border-slate-200 bg-white shrink-0 overflow-x-hidden">
->>>>>>> origin/main
                 <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                   <button
                     type="button"
@@ -1012,7 +821,6 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
             </div>
 
             <form onSubmit={handleCreateNewConsult} className="p-6 space-y-4 text-xs">
-<<<<<<< HEAD
               {modalError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -1039,21 +847,6 @@ export const DoctorConsultation: React.FC<DoctorConsultationProps> = ({
                     ))}
                   </select>
                 )}
-=======
-              <div>
-                <label className="block text-slate-700 font-bold mb-1">Select Patient</label>
-                <select
-                  value={newPatientName}
-                  onChange={(e) => setNewPatientName(e.target.value)}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 font-bold"
-                >
-                  <option value="Harsh Vishwas">Harsh Vishwas (Primary · O+)</option>
-                  <option value="Neha Singh">Neha Singh (AB+)</option>
-                  <option value="Amit Kumar">Amit Kumar (A+)</option>
-                  <option value="Rohan Verma">Rohan Verma (B+)</option>
-                  <option value="Sneha Patel">Sneha Patel (O-)</option>
-                </select>
->>>>>>> origin/main
               </div>
 
               <div>

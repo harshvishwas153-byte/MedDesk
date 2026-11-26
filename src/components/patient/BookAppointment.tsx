@@ -16,11 +16,6 @@ import {
 } from 'lucide-react';
 import { Appointment, Doctor, User } from '../../types';
 import { MedicareApiClient } from '../../services/api';
-<<<<<<< HEAD
-=======
-import { collection, query, onSnapshot } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
->>>>>>> origin/main
 
 interface BookAppointmentProps {
   currentUser: User;
@@ -33,29 +28,16 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
   currentUser,
   preSelectedDoctorId,
   onBookingSuccess,
-<<<<<<< HEAD
 }) => {
   const [doctors, setDoctors] = useState<Doctor[]>(() => MedicareApiClient.getDoctors());
-=======
-  onCancel,
-}) => {
-  const doctors: Doctor[] = MedicareApiClient.getDoctors();
->>>>>>> origin/main
 
   // Stepper state: 1 = Select Doctor, 2 = Date & Time, 3 = Confirm Details
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(preSelectedDoctorId ? 2 : 1);
   const [selectedDoctorId, setSelectedDoctorId] = useState<string>(
-<<<<<<< HEAD
     preSelectedDoctorId || doctors[0]?.id || 'doc-sarah'
   );
 
   // Appointments state synchronized with server bootstrap
-=======
-    preSelectedDoctorId || doctors[0].id
-  );
-
-  // Appointments state with live cloud sync
->>>>>>> origin/main
   const [appointments, setAppointments] = useState<Appointment[]>(() =>
     MedicareApiClient.getAppointments()
   );
@@ -80,45 +62,19 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
   });
   const [selectedTime, setSelectedTime] = useState('10:00 AM');
   const [reason, setReason] = useState('Routine Checkup & Clinical Consultation');
-<<<<<<< HEAD
   const [consultationType, setConsultationType] = useState<'In-Clinic' | 'Video/Online'>('In-Clinic');
-=======
->>>>>>> origin/main
   const [paymentMethod, setPaymentMethod] = useState<'clinic' | 'online'>('clinic');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedDoctor = doctors.find((d) => d.id === selectedDoctorId) || doctors[0];
 
   useEffect(() => {
-<<<<<<< HEAD
     const syncState = () => {
       setDoctors(MedicareApiClient.getDoctors());
       setAppointments(MedicareApiClient.getAppointments());
     };
     syncState();
     return MedicareApiClient.subscribe(syncState);
-=======
-    const loadApts = () => {
-      setAppointments(MedicareApiClient.getAppointments());
-    };
-    loadApts();
-    const unsubLocal = MedicareApiClient.subscribe(loadApts);
-
-    try {
-      const q = query(collection(db, 'appointments'));
-      const unsubCloud = onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-          loadApts();
-        }
-      });
-      return () => {
-        unsubLocal();
-        unsubCloud();
-      };
-    } catch {
-      return () => unsubLocal();
-    }
->>>>>>> origin/main
   }, []);
 
   const handlePrevMonth = () => {
@@ -136,17 +92,13 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
   };
 
   const checkDoctorAvailabilityForDate = (year: number, month: number, day: number) => {
-<<<<<<< HEAD
     if (!selectedDoctor) return true;
-=======
->>>>>>> origin/main
     const dateObj = new Date(year, month, day);
     const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
     const monthFormatted = (month + 1).toString().padStart(2, '0');
     const dayFormatted = day.toString().padStart(2, '0');
     const dateStr = `${year}-${monthFormatted}-${dayFormatted}`;
 
-<<<<<<< HEAD
     const config = MedicareApiClient.getDoctorSchedule(selectedDoctor.id);
     if (config) {
       if (config.overrides && config.overrides[dateStr]) {
@@ -167,29 +119,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
         if (isHol) return false;
       }
     }
-=======
-    try {
-      const saved = localStorage.getItem(`medicare_doctor_schedule_${selectedDoctor.id}`);
-      if (saved) {
-        const config = JSON.parse(saved);
-        if (config.overrides && config.overrides[dateStr]) {
-          const ov = config.overrides[dateStr];
-          if (ov.status !== 'Available') return false;
-        }
-        if (config.weekly && config.weekly[weekday]) {
-          if (!config.weekly[weekday].isWorking) return false;
-        }
-        if (config.leaves) {
-          const onLeave = config.leaves.some((l: any) => dateStr >= l.startDate && dateStr <= (l.endDate || l.startDate));
-          if (onLeave) return false;
-        }
-        if (config.holidays) {
-          const isHol = config.holidays.some((h: any) => h.startDate === dateStr);
-          if (isHol) return false;
-        }
-      }
-    } catch {}
->>>>>>> origin/main
     return true;
   };
 
@@ -207,32 +136,16 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
     return matchesSearch && matchesDept && matchesLoc;
   });
 
-<<<<<<< HEAD
   const normalizeDateString = (dateStr: string) => {
     if (!dateStr) return '';
     const cleaned = dateStr.replace(/^[A-Za-z]+,\s*/, '');
     const d = new Date(cleaned);
     if (!Number.isNaN(d.getTime())) {
-=======
-  const availableDates = [
-    '12 October 2024',
-    '13 October 2024',
-    '14 October 2024',
-    '15 October 2024',
-    '16 October 2024',
-  ];
-
-  const normalizeDateString = (dateStr: string) => {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (!isNaN(d.getTime())) {
->>>>>>> origin/main
       return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
     }
     return dateStr.trim().toLowerCase();
   };
 
-<<<<<<< HEAD
   const ALL_TIME_SLOTS = selectedDoctor
     ? MedicareApiClient.getDoctorSlots(selectedDoctor.id, normalizeDateString(selectedDate))
     : [];
@@ -251,27 +164,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
       const docMatch = app.doctorId === selectedDoctor.id;
       const dateMatch = normalizeDateString(app.date) === normSelectedDate;
       const timeMatch = app.time.trim().toLowerCase() === normSlot;
-=======
-  const ALL_TIME_SLOTS = MedicareApiClient.getDoctorSlots(
-    selectedDoctor.id,
-    normalizeDateString(selectedDate)
-  );
-
-  const isSlotBooked = (slotTime: string) => {
-    const normSelectedDate = normalizeDateString(selectedDate);
-    const normSlot = slotTime.trim().toLowerCase();
-
-    return appointments.some((app) => {
-      if (app.status === 'Cancelled') return false;
-      const docMatch =
-        app.doctorId === selectedDoctor.id ||
-        app.doctorName.toLowerCase().includes(selectedDoctor.name.toLowerCase()) ||
-        selectedDoctor.name.toLowerCase().includes(app.doctorName.toLowerCase());
-
-      const dateMatch = normalizeDateString(app.date) === normSelectedDate;
-      const timeMatch = app.time.trim().toLowerCase() === normSlot;
-
->>>>>>> origin/main
       return docMatch && dateMatch && timeMatch;
     });
   };
@@ -280,11 +172,7 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
   const areAllSlotsBooked = unbookedSlots.length === 0;
 
   useEffect(() => {
-<<<<<<< HEAD
     if (isSlotBooked(selectedTime) || !ALL_TIME_SLOTS.includes(selectedTime)) {
-=======
-    if (isSlotBooked(selectedTime)) {
->>>>>>> origin/main
       if (unbookedSlots.length > 0) {
         setSelectedTime(unbookedSlots[0]);
       }
@@ -297,7 +185,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
     setCurrentStep(2);
   };
 
-<<<<<<< HEAD
   const handleProceedToReview = () => {
     setBookingError(null);
     if (isSlotBooked(selectedTime)) {
@@ -317,18 +204,10 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
       setBookingError(
         `The time slot '${selectedTime}' on ${selectedDate} is already booked. Please choose another slot.`
       );
-=======
-  const handleConfirmBooking = () => {
-    setBookingError(null);
-
-    if (isSlotBooked(selectedTime)) {
-      setBookingError(`The time slot '${selectedTime}' on ${selectedDate} is already booked. Please choose another slot.`);
->>>>>>> origin/main
       return;
     }
 
     setIsSubmitting(true);
-<<<<<<< HEAD
     try {
       const booked = await MedicareApiClient.bookAppointment({
         doctorId: selectedDoctor.id,
@@ -347,27 +226,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
       setIsSubmitting(false);
       setBookingError((err as Error).message || 'Failed to book appointment. Slot may have been taken.');
     }
-=======
-
-    (async () => {
-      try {
-        const booked = await MedicareApiClient.bookAppointment({
-          doctorId: selectedDoctor.id,
-          patientId: currentUser.id,
-          patientName: currentUser.name,
-          date: selectedDate,
-          time: selectedTime,
-          reason: reason || 'Consultation',
-        });
-
-        setIsSubmitting(false);
-        onBookingSuccess(booked);
-      } catch (err: any) {
-        setIsSubmitting(false);
-        setBookingError(err.message || 'Failed to book appointment. Slot may have been taken.');
-      }
-    })();
->>>>>>> origin/main
   };
 
   return (
@@ -797,7 +655,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
             {/* Consultation Type */}
             <div className="space-y-3">
               <span className="text-xs font-bold text-slate-900 block">Consultation Type</span>
-<<<<<<< HEAD
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {(['In-Clinic', 'Video/Online'] as const).map((type) => (
                   <button
@@ -838,24 +695,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
             <button
               type="button"
               onClick={handleProceedToReview}
-=======
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-rose-200 bg-rose-50/40">
-                  <div className="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0">
-                    <Check className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-slate-900 block">In-Clinic Visit</span>
-                    <span className="text-[11px] text-slate-500">Visit at hospital OPD counter</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Continue Button */}
-            <button
-              onClick={handleConfirmBooking}
->>>>>>> origin/main
               disabled={isSubmitting || areAllSlotsBooked || isSlotBooked(selectedTime)}
               className={`w-full py-3.5 text-white font-bold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 ${
                 areAllSlotsBooked || isSlotBooked(selectedTime)
@@ -863,17 +702,9 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
                   : 'bg-rose-600 hover:bg-rose-700 hover:shadow-lg cursor-pointer'
               }`}
             >
-<<<<<<< HEAD
               {areAllSlotsBooked
                 ? 'No Slots Available for this Date'
                 : 'Continue to Review & Payment'}
-=======
-              {isSubmitting
-                ? 'Scheduling...'
-                : areAllSlotsBooked
-                ? 'No Slots Available for this Date'
-                : 'Continue'}
->>>>>>> origin/main
             </button>
           </div>
         </div>
@@ -885,7 +716,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
           <div className="text-center pb-2">
             <h3 className="text-base font-bold text-slate-900">Review Booking Details</h3>
             <p className="text-xs text-slate-500">
-<<<<<<< HEAD
               Please verify your appointment schedule and payment preference before confirming.
             </p>
           </div>
@@ -897,13 +727,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
             </div>
           )}
 
-=======
-              Please verify your appointment schedule before confirming.
-            </p>
-          </div>
-
-          {/* Summary Box matching clinical style */}
->>>>>>> origin/main
           <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
@@ -919,11 +742,7 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
                 <span className="font-bold text-slate-900 text-sm">
                   {selectedDoctor.hospital}
                 </span>
-<<<<<<< HEAD
                 <span className="text-slate-500 block text-xs">{consultationType} · Counter 3</span>
-=======
-                <span className="text-slate-500 block text-xs">Main OPD Wing, Counter 3</span>
->>>>>>> origin/main
               </div>
 
               <div>
@@ -943,7 +762,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
               </div>
 
               <div className="sm:col-span-2 pt-2 border-t border-slate-200">
-<<<<<<< HEAD
                 <label className="text-slate-600 font-semibold block text-[11px] mb-1">
                   Reason for Consultation
                 </label>
@@ -954,10 +772,6 @@ export const BookAppointment: React.FC<BookAppointmentProps> = ({
                   placeholder="Describe symptoms or visit purpose..."
                   className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl outline-none focus:border-rose-400 text-slate-800"
                 />
-=======
-                <span className="text-slate-400 block text-[11px]">Reason for Consultation</span>
-                <span className="font-medium text-slate-800">{reason}</span>
->>>>>>> origin/main
               </div>
             </div>
           </div>

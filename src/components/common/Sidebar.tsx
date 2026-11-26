@@ -28,10 +28,6 @@ interface SidebarProps {
   onLogout: () => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
-<<<<<<< HEAD
-=======
-  onOpenJavaRubric?: () => void;
->>>>>>> origin/main
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -42,10 +38,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
   isMobileOpen = false,
   onCloseMobile,
-<<<<<<< HEAD
-=======
-  onOpenJavaRubric,
->>>>>>> origin/main
 }) => {
   const effectiveRole: UserRole = userRole || currentUser?.role || 'PATIENT';
 

@@ -1,24 +1,8 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Search,
   Star,
   ChevronDown,
-=======
-import React, { useState } from 'react';
-import {
-  Search,
-  SlidersHorizontal,
-  Star,
-  Clock,
-  Calendar,
-  ChevronDown,
-  CheckCircle2,
-  MapPin,
-  ShieldCheck,
-  ArrowRight,
-  Filter,
->>>>>>> origin/main
 } from 'lucide-react';
 import { Doctor, ViewMode } from '../../types';
 import { MedicareApiClient } from '../../services/api';
@@ -33,16 +17,11 @@ export const FindDoctors: React.FC<FindDoctorsProps> = ({
   onNavigate,
   onSelectDoctorToBook,
 }) => {
-<<<<<<< HEAD
   const [doctors, setDoctors] = useState<Doctor[]>(MedicareApiClient.getDoctors());
-=======
-  const doctors: Doctor[] = MedicareApiClient.getDoctors();
->>>>>>> origin/main
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedDoctorForProfile, setSelectedDoctorForProfile] = useState<Doctor | null>(null);
 
-<<<<<<< HEAD
   useEffect(() => {
     const sync = () => setDoctors(MedicareApiClient.getDoctors());
     sync();
@@ -53,15 +32,6 @@ export const FindDoctors: React.FC<FindDoctorsProps> = ({
     const unique = Array.from(new Set(doctors.map((d) => d.specialty).filter(Boolean)));
     return ['All', ...unique];
   }, [doctors]);
-=======
-  const specialties = [
-    'All',
-    'General Physician',
-    'Cardiologist',
-    'Dermatologist',
-    'Pediatrician',
-  ];
->>>>>>> origin/main
 
   const filteredDoctors = doctors.filter((doc) => {
     const matchesSpecialty =

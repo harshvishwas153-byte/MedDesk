@@ -26,17 +26,12 @@ export const MyAppointments: React.FC<MyAppointmentsProps> = ({
   currentUser,
   onNavigate,
 }) => {
-<<<<<<< HEAD
   const [appointments, setAppointments] = useState<Appointment[]>(() =>
-=======
-  const [appointments, setAppointments] = useState<Appointment[]>(
->>>>>>> origin/main
     MedicareApiClient.getAppointmentsByPatient(currentUser.id)
   );
   const [filter, setFilter] = useState<'All' | 'Upcoming' | 'Completed' | 'Cancelled'>('All');
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
-<<<<<<< HEAD
   React.useEffect(() => {
     const sync = () => {
       setAppointments(MedicareApiClient.getAppointmentsByPatient(currentUser.id));
@@ -45,21 +40,13 @@ export const MyAppointments: React.FC<MyAppointmentsProps> = ({
     return MedicareApiClient.subscribe(sync);
   }, [currentUser.id]);
 
-=======
->>>>>>> origin/main
   const filtered = appointments.filter((a) => {
     if (filter === 'All') return true;
     return a.status === filter;
   });
 
-<<<<<<< HEAD
   const handleCancel = async (id: string) => {
     await MedicareApiClient.updateAppointmentStatus(id, 'Cancelled');
-=======
-  const handleCancel = (id: string) => {
-    const updated = MedicareApiClient.updateAppointmentStatus(id, 'Cancelled');
-    setAppointments(updated.filter((a) => a.patientId === currentUser.id));
->>>>>>> origin/main
     if (selectedAppointment && selectedAppointment.id === id) {
       setSelectedAppointment(null);
     }

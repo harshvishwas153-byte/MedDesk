@@ -1,44 +1,20 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import {
   Calendar,
-=======
-import React, { useState } from 'react';
-import {
-  Calendar,
-  Clock,
->>>>>>> origin/main
   Check,
   X,
   AlertTriangle,
   Plus,
   Trash2,
-<<<<<<< HEAD
   ArrowLeft,
 } from 'lucide-react';
 import { Doctor, ViewMode, Appointment } from '../../types';
 import { DoctorScheduleConfig, MedicareApiClient } from '../../services/api';
-=======
-  ShieldCheck,
-  ArrowLeft,
-  User,
-  Stethoscope,
-  Building2,
-  Sun,
-  CalendarDays,
-  Coffee,
-  Lock,
-  Edit3,
-} from 'lucide-react';
-import { Doctor, ViewMode, Appointment } from '../../types';
-import { MedicareApiClient } from '../../services/api';
->>>>>>> origin/main
 
 interface AdminDoctorScheduleProps {
   onNavigate: (view: ViewMode) => void;
 }
 
-<<<<<<< HEAD
 function createDefaultScheduleConfig(): DoctorScheduleConfig {
   return {
     weekly: {
@@ -85,51 +61,11 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
       (resolvedDocId && MedicareApiClient.getDoctorSchedule(resolvedDocId)) ||
       createDefaultScheduleConfig()
   );
-=======
-export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
-  onNavigate,
-}) => {
-  const doctors = MedicareApiClient.getDoctors();
-  const selectedDoctorId = localStorage.getItem('medicare_admin_selected_doctor_id') || doctors[0]?.id || 'doc-1';
-  const [currentDoctorId, setCurrentDoctorId] = useState<string>(selectedDoctorId);
-
-  const doctor = doctors.find((d) => d.id === currentDoctorId) || doctors[0];
-
-  // Retrieve schedule config from localStorage
-  const scheduleStorageKey = `medicare_doctor_schedule_${currentDoctorId}`;
-  const [scheduleConfig, setScheduleConfig] = useState(() => {
-    try {
-      const saved = localStorage.getItem(scheduleStorageKey);
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return {
-      weekly: {
-        Monday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', breakStart: '01:00 PM', breakEnd: '02:00 PM', slotDurationMinutes: 20 },
-        Tuesday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', breakStart: '01:00 PM', breakEnd: '02:00 PM', slotDurationMinutes: 20 },
-        Wednesday: { isWorking: false, startTime: '10:00 AM', endTime: '04:00 PM', breakStart: '01:00 PM', breakEnd: '02:00 PM', slotDurationMinutes: 20 },
-        Thursday: { isWorking: true, startTime: '02:00 PM', endTime: '08:00 PM', breakStart: '05:00 PM', breakEnd: '05:30 PM', slotDurationMinutes: 20 },
-        Friday: { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', breakStart: '01:00 PM', breakEnd: '02:00 PM', slotDurationMinutes: 20 },
-        Saturday: { isWorking: true, startTime: '10:00 AM', endTime: '01:00 PM', breakStart: '', breakEnd: '', slotDurationMinutes: 20 },
-        Sunday: { isWorking: false, startTime: '10:00 AM', endTime: '04:00 PM', breakStart: '', breakEnd: '', slotDurationMinutes: 20 },
-      },
-      overrides: {}, // date string YYYY-MM-DD -> { status: 'Available'|'Absent'|'Leave'|'Holiday', startTime, endTime, reason }
-      leaves: [
-        { id: 'leave-1', type: 'Single-Day', startDate: '2026-09-28', endDate: '2026-09-28', reason: 'Medical conference in Mumbai' },
-      ],
-      holidays: [
-        { id: 'hol-1', startDate: '2026-10-02', reason: 'Gandhi Jayanti National Holiday' },
-      ],
-    };
-  });
->>>>>>> origin/main
 
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [activeTab, setActiveTab] = useState<'weekly' | 'overrides' | 'leaves'>('weekly');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-<<<<<<< HEAD
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-=======
->>>>>>> origin/main
 
   // Modals
   const [showLeaveModal, setShowLeaveModal] = useState(false);
@@ -138,7 +74,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
   const [leaveEndDate, setLeaveEndDate] = useState('');
   const [leaveReason, setLeaveReason] = useState('');
   const [leaveType, setLeaveType] = useState<'Single-Day' | 'Multi-Day'>('Single-Day');
-<<<<<<< HEAD
   const [holidayDate, setHolidayDate] = useState(new Date().toISOString().split('T')[0]);
   const [holidayReason, setHolidayReason] = useState('');
 
@@ -179,25 +114,10 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
     } catch (err) {
       setErrorMessage((err as Error).message || 'Failed to save doctor schedule.');
     }
-=======
-
-  // Existing Appointments Warning Modal state
-  const [pendingUnavailableDate, setPendingUnavailableDate] = useState<string | null>(null);
-  const [pendingUnavailableStatus, setPendingUnavailableStatus] = useState<string>('Absent');
-  const [affectedAppointments, setAffectedAppointments] = useState<Appointment[]>([]);
-  const [showAppointmentWarningModal, setShowAppointmentWarningModal] = useState(false);
-
-  const saveConfig = (newConfig: typeof scheduleConfig) => {
-    setScheduleConfig(newConfig);
-    localStorage.setItem(scheduleStorageKey, JSON.stringify(newConfig));
-    setSuccessMessage('Schedule and availability successfully updated!');
-    setTimeout(() => setSuccessMessage(null), 3000);
->>>>>>> origin/main
   };
 
   const handleDoctorChange = (docId: string) => {
     setCurrentDoctorId(docId);
-<<<<<<< HEAD
     MedicareApiClient.setAdminSelectedDoctorId(docId);
     const saved = MedicareApiClient.getDoctorSchedule(docId);
     setScheduleConfig(saved || createDefaultScheduleConfig());
@@ -213,35 +133,15 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
       slotDurationMinutes: 20,
     };
     const updated: DoctorScheduleConfig = {
-=======
-    localStorage.setItem('medicare_admin_selected_doctor_id', docId);
-    try {
-      const saved = localStorage.getItem(`medicare_doctor_schedule_${docId}`);
-      if (saved) {
-        setScheduleConfig(JSON.parse(saved));
-      } else {
-        // Reset or load default
-      }
-    } catch {}
-  };
-
-  const handleUpdateWeeklyDay = (day: string, field: string, value: any) => {
-    const updated = {
->>>>>>> origin/main
       ...scheduleConfig,
       weekly: {
         ...scheduleConfig.weekly,
         [day]: {
-<<<<<<< HEAD
           ...currentDay,
-=======
-          ...scheduleConfig.weekly[day],
->>>>>>> origin/main
           [field]: value,
         },
       },
     };
-<<<<<<< HEAD
     void saveConfig(updated);
   };
 
@@ -284,19 +184,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
       (status === 'Absent' || status === 'Leave' || status === 'Holiday') &&
       matchedAppts.length > 0
     ) {
-=======
-    saveConfig(updated);
-  };
-
-  const handleSetDateOverride = (dateStr: string, status: 'Available' | 'Absent' | 'Leave' | 'Holiday', reason = '') => {
-    // Check if appointments exist on this date for this doctor
-    const allAppointments = MedicareApiClient.getAppointments() || [];
-    const matchedAppts = allAppointments.filter(
-      (a) => a.doctorId === doctor.id && (a.date.includes(dateStr) || a.date.includes('12 October 2024') /* mock date check */)
-    );
-
-    if ((status === 'Absent' || status === 'Leave' || status === 'Holiday') && matchedAppts.length > 0) {
->>>>>>> origin/main
       setPendingUnavailableDate(dateStr);
       setPendingUnavailableStatus(status);
       setAffectedAppointments(matchedAppts);
@@ -304,32 +191,10 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
       return;
     }
 
-<<<<<<< HEAD
     void applyOverrideDirect(dateStr, status, reason);
   };
 
   const handleAddLeave = async (e: React.FormEvent) => {
-=======
-    applyOverrideDirect(dateStr, status, reason);
-  };
-
-  const applyOverrideDirect = (dateStr: string, status: string, reason = '') => {
-    const updated = {
-      ...scheduleConfig,
-      overrides: {
-        ...scheduleConfig.overrides,
-        [dateStr]: {
-          status,
-          reason,
-        },
-      },
-    };
-    saveConfig(updated);
-    setShowAppointmentWarningModal(false);
-  };
-
-  const handleAddLeave = (e: React.FormEvent) => {
->>>>>>> origin/main
     e.preventDefault();
     if (!leaveStartDate || !leaveReason) return;
 
@@ -337,35 +202,22 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
       id: `leave-${Date.now()}`,
       type: leaveType,
       startDate: leaveStartDate,
-<<<<<<< HEAD
       endDate: leaveType === 'Multi-Day' ? leaveEndDate || leaveStartDate : leaveStartDate,
       reason: leaveReason,
     };
 
     const updated: DoctorScheduleConfig = {
-=======
-      endDate: leaveType === 'Multi-Day' ? leaveEndDate : leaveStartDate,
-      reason: leaveReason,
-    };
-
-    const updated = {
->>>>>>> origin/main
       ...scheduleConfig,
       leaves: [...(scheduleConfig.leaves || []), newLeave],
     };
 
-<<<<<<< HEAD
     await saveConfig(updated);
-=======
-    saveConfig(updated);
->>>>>>> origin/main
     setShowLeaveModal(false);
     setLeaveStartDate('');
     setLeaveEndDate('');
     setLeaveReason('');
   };
 
-<<<<<<< HEAD
   const handleAddHoliday = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!holidayDate || !holidayReason.trim()) return;
@@ -412,27 +264,12 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
   const getDayName = (dateString: string) => {
     try {
       const d = new Date(`${dateString}T00:00:00`);
-=======
-  const handleDeleteLeave = (leaveId: string) => {
-    const updated = {
-      ...scheduleConfig,
-      leaves: scheduleConfig.leaves.filter((l: any) => l.id !== leaveId),
-    };
-    saveConfig(updated);
-  };
-
-  // Generate slots for selected date
-  const getDayName = (dateString: string) => {
-    try {
-      const d = new Date(dateString);
->>>>>>> origin/main
       return d.toLocaleDateString('en-US', { weekday: 'long' });
     } catch {
       return 'Monday';
     }
   };
 
-<<<<<<< HEAD
   if (!doctor) {
     return (
       <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl border border-slate-200 text-center space-y-3">
@@ -461,19 +298,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
     slotDurationMinutes: 20,
   };
   const dateOverride = scheduleConfig.overrides?.[selectedDate];
-=======
-  const dayOfWeek = getDayName(selectedDate);
-  const daySchedule = scheduleConfig.weekly[dayOfWeek] || { isWorking: true, startTime: '10:00 AM', endTime: '04:00 PM', breakStart: '01:00 PM', breakEnd: '02:00 PM', slotDurationMinutes: 20 };
-  const dateOverride = scheduleConfig.overrides[selectedDate];
-
-  // Determine effective status for selectedDate
-  let effectiveStatus = 'Available';
-  if (dateOverride) {
-    effectiveStatus = dateOverride.status;
-  } else if (!daySchedule.isWorking) {
-    effectiveStatus = 'OFF';
-  }
->>>>>>> origin/main
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-12">
@@ -490,13 +314,9 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
           </button>
           <div>
             <div className="flex items-center gap-2">
-<<<<<<< HEAD
               <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">
                 Doctor Schedule & Availability
               </h2>
-=======
-              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">Doctor Schedule & Availability</h2>
->>>>>>> origin/main
               <span className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-xs font-bold border border-rose-200">
                 Admin Panel
               </span>
@@ -511,11 +331,7 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <span className="text-xs font-bold text-slate-600 shrink-0">Select Doctor:</span>
           <select
-<<<<<<< HEAD
             value={resolvedDocId}
-=======
-            value={currentDoctorId}
->>>>>>> origin/main
             onChange={(e) => handleDoctorChange(e.target.value)}
             className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 outline-none focus:border-rose-400 min-w-[200px]"
           >
@@ -528,7 +344,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
         </div>
       </div>
 
-<<<<<<< HEAD
       {errorMessage && (
         <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold rounded-2xl flex items-center gap-2.5">
           <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
@@ -536,8 +351,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
         </div>
       )}
 
-=======
->>>>>>> origin/main
       {successMessage && (
         <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-2xl flex items-center gap-2.5 animate-fadeIn shadow-xs">
           <Check className="w-5 h-5 text-emerald-600 shrink-0" />
@@ -561,7 +374,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-500 font-medium mt-1">
-<<<<<<< HEAD
               {doctor.specialty} · <strong className="text-slate-800">{doctor.department}</strong> ·{' '}
               {doctor.hospital}
             </p>
@@ -573,22 +385,10 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
               <span>
                 Experience: <strong className="text-slate-900">{doctor.experienceYears} Years</strong>
               </span>
-=======
-              {doctor.specialty} · <strong className="text-slate-800">{doctor.department}</strong> · {doctor.hospital}
-            </p>
-            <div className="flex items-center justify-center md:justify-start gap-3 mt-2 text-xs text-slate-600 flex-wrap">
-              <span>Consultation Fee: <strong className="text-slate-900">₹{doctor.consultationFee}</strong></span>
-              <span>•</span>
-              <span>Experience: <strong className="text-slate-900">{doctor.experienceYears} Years</strong></span>
->>>>>>> origin/main
             </div>
           </div>
         </div>
 
-<<<<<<< HEAD
-=======
-        {/* Quick Actions */}
->>>>>>> origin/main
         <div className="flex items-center gap-2.5 flex-wrap justify-center">
           <button
             type="button"
@@ -643,13 +443,9 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
               <h3 className="text-base font-bold text-slate-900">Recurring Weekly Schedule</h3>
-<<<<<<< HEAD
               <p className="text-xs text-slate-500">
                 Configure standard working hours, breaks, and slot durations for each day of the week
               </p>
-=======
-              <p className="text-xs text-slate-500">Configure standard working hours, breaks, and slot durations for each day of the week</p>
->>>>>>> origin/main
             </div>
             <span className="px-3 py-1 bg-rose-50 text-rose-700 text-xs font-bold rounded-lg border border-rose-200">
               Auto-Applies Weekly
@@ -657,16 +453,11 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
           </div>
 
           <div className="space-y-3">
-<<<<<<< HEAD
             {Object.entries(scheduleConfig.weekly).map(([dayName, dayInfo]) => (
               <div
                 key={dayName}
                 className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
               >
-=======
-            {Object.entries(scheduleConfig.weekly).map(([dayName, dayInfo]: [string, any]) => (
-              <div key={dayName} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
->>>>>>> origin/main
                 <div className="flex items-center gap-3 min-w-[130px]">
                   <input
                     type="checkbox"
@@ -674,15 +465,11 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                     onChange={(e) => handleUpdateWeeklyDay(dayName, 'isWorking', e.target.checked)}
                     className="w-4 h-4 accent-rose-600 rounded cursor-pointer"
                   />
-<<<<<<< HEAD
                   <span
                     className={`font-bold text-sm ${
                       dayInfo.isWorking ? 'text-slate-900' : 'text-slate-400 line-through'
                     }`}
                   >
-=======
-                  <span className={`font-bold text-sm ${dayInfo.isWorking ? 'text-slate-900' : 'text-slate-400 line-through'}`}>
->>>>>>> origin/main
                     {dayName}
                   </span>
                 </div>
@@ -690,13 +477,9 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                 {dayInfo.isWorking ? (
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1 w-full text-xs">
                     <div>
-<<<<<<< HEAD
                       <span className="block text-[10px] font-bold text-slate-500 mb-0.5">
                         Start Time
                       </span>
-=======
-                      <span className="block text-[10px] font-bold text-slate-500 mb-0.5">Start Time</span>
->>>>>>> origin/main
                       <input
                         type="text"
                         value={dayInfo.startTime}
@@ -705,13 +488,9 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                       />
                     </div>
                     <div>
-<<<<<<< HEAD
                       <span className="block text-[10px] font-bold text-slate-500 mb-0.5">
                         End Time
                       </span>
-=======
-                      <span className="block text-[10px] font-bold text-slate-500 mb-0.5">End Time</span>
->>>>>>> origin/main
                       <input
                         type="text"
                         value={dayInfo.endTime}
@@ -720,24 +499,16 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                       />
                     </div>
                     <div>
-<<<<<<< HEAD
                       <span className="block text-[10px] font-bold text-slate-500 mb-0.5">
                         Break Time
                       </span>
-=======
-                      <span className="block text-[10px] font-bold text-slate-500 mb-0.5">Break Time</span>
->>>>>>> origin/main
                       <div className="flex items-center gap-1">
                         <input
                           type="text"
                           value={dayInfo.breakStart}
-<<<<<<< HEAD
                           onChange={(e) =>
                             handleUpdateWeeklyDay(dayName, 'breakStart', e.target.value)
                           }
-=======
-                          onChange={(e) => handleUpdateWeeklyDay(dayName, 'breakStart', e.target.value)}
->>>>>>> origin/main
                           placeholder="1 PM"
                           className="w-full p-2 bg-white border border-slate-200 rounded-xl font-medium"
                         />
@@ -745,20 +516,15 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                         <input
                           type="text"
                           value={dayInfo.breakEnd}
-<<<<<<< HEAD
                           onChange={(e) =>
                             handleUpdateWeeklyDay(dayName, 'breakEnd', e.target.value)
                           }
-=======
-                          onChange={(e) => handleUpdateWeeklyDay(dayName, 'breakEnd', e.target.value)}
->>>>>>> origin/main
                           placeholder="2 PM"
                           className="w-full p-2 bg-white border border-slate-200 rounded-xl font-medium"
                         />
                       </div>
                     </div>
                     <div>
-<<<<<<< HEAD
                       <span className="block text-[10px] font-bold text-slate-500 mb-0.5">
                         Slot Duration
                       </span>
@@ -771,12 +537,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                             Number(e.target.value)
                           )
                         }
-=======
-                      <span className="block text-[10px] font-bold text-slate-500 mb-0.5">Slot Duration</span>
-                      <select
-                        value={dayInfo.slotDurationMinutes}
-                        onChange={(e) => handleUpdateWeeklyDay(dayName, 'slotDurationMinutes', Number(e.target.value))}
->>>>>>> origin/main
                         className="w-full p-2 bg-white border border-slate-200 rounded-xl font-bold"
                       >
                         <option value={15}>15 mins</option>
@@ -803,13 +563,9 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
               <h3 className="text-base font-bold text-slate-900">Specific Date Overrides</h3>
-<<<<<<< HEAD
               <p className="text-xs text-slate-500">
                 Select any calendar date to override the normal weekly schedule (e.g. mark absent or special hours)
               </p>
-=======
-              <p className="text-xs text-slate-500">Select any calendar date to override the normal weekly schedule (e.g. mark absent or special hours)</p>
->>>>>>> origin/main
             </div>
           </div>
 
@@ -837,13 +593,9 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="text-slate-500 font-medium">Normal Status:</span>
                   <strong className={daySchedule.isWorking ? 'text-emerald-600' : 'text-rose-600'}>
-<<<<<<< HEAD
                     {daySchedule.isWorking
                       ? `Working (${daySchedule.startTime} - ${daySchedule.endTime})`
                       : 'OFF'}
-=======
-                    {daySchedule.isWorking ? `Working (${daySchedule.startTime} - ${daySchedule.endTime})` : 'OFF'}
->>>>>>> origin/main
                   </strong>
                 </div>
                 <div className="flex items-center justify-between">
@@ -855,79 +607,52 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
               </div>
 
               <div className="space-y-2">
-<<<<<<< HEAD
                 <span className="block text-xs font-bold text-slate-700">
                   Set Status for {selectedDate}:
                 </span>
-=======
-                <span className="block text-xs font-bold text-slate-700">Set Status for {selectedDate}:</span>
->>>>>>> origin/main
                 <div className="grid grid-cols-2 gap-2 text-xs font-bold">
                   <button
                     type="button"
                     onClick={() => handleSetDateOverride(selectedDate, 'Available')}
                     className="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
                   >
-<<<<<<< HEAD
                     <span>Available</span>
-=======
-                    <span>🟢 Available</span>
->>>>>>> origin/main
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSetDateOverride(selectedDate, 'Absent')}
                     className="p-2.5 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
                   >
-<<<<<<< HEAD
                     <span>Absent / OFF</span>
-=======
-                    <span>🔴 Absent / OFF</span>
->>>>>>> origin/main
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSetDateOverride(selectedDate, 'Leave')}
                     className="p-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
                   >
-<<<<<<< HEAD
                     <span>On Leave</span>
-=======
-                    <span>🟡 On Leave</span>
->>>>>>> origin/main
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSetDateOverride(selectedDate, 'Holiday')}
                     className="p-2.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl cursor-pointer flex items-center justify-center gap-1.5"
                   >
-<<<<<<< HEAD
                     <span>Holiday</span>
-=======
-                    <span>⚪ Holiday</span>
->>>>>>> origin/main
                   </button>
                 </div>
               </div>
             </div>
 
-<<<<<<< HEAD
             <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
               <h4 className="font-bold text-slate-900 text-sm">
                 Active Date Overrides ({Object.keys(scheduleConfig.overrides || {}).length})
               </h4>
-=======
-            {/* List of Active Overrides */}
-            <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
-              <h4 className="font-bold text-slate-900 text-sm">Active Date Overrides ({Object.keys(scheduleConfig.overrides || {}).length})</h4>
->>>>>>> origin/main
               {Object.keys(scheduleConfig.overrides || {}).length === 0 ? (
                 <div className="text-center py-8 text-slate-400 text-xs">
                   No date overrides configured. All dates follow the weekly schedule.
                 </div>
               ) : (
                 <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
-<<<<<<< HEAD
                   {Object.entries(scheduleConfig.overrides).map(([date, ov]) => (
                     <div
                       key={date}
@@ -937,23 +662,12 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                         <strong className="text-slate-900 block">{date}</strong>
                         <span className="text-rose-600 font-bold">{ov.status}</span>{' '}
                         {ov.reason && `(${ov.reason})`}
-=======
-                  {Object.entries(scheduleConfig.overrides).map(([date, ov]: [string, any]) => (
-                    <div key={date} className="p-3 bg-white rounded-xl border border-slate-200 flex items-center justify-between text-xs">
-                      <div>
-                        <strong className="text-slate-900 block">{date}</strong>
-                        <span className="text-rose-600 font-bold">{ov.status}</span> {ov.reason && `(${ov.reason})`}
->>>>>>> origin/main
                       </div>
                       <button
                         onClick={() => {
                           const updatedOverrides = { ...scheduleConfig.overrides };
                           delete updatedOverrides[date];
-<<<<<<< HEAD
                           void saveConfig({ ...scheduleConfig, overrides: updatedOverrides });
-=======
-                          saveConfig({ ...scheduleConfig, overrides: updatedOverrides });
->>>>>>> origin/main
                         }}
                         className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer"
                         title="Remove Override"
@@ -975,13 +689,9 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
               <h3 className="text-base font-bold text-slate-900">Upcoming Leaves & Holidays</h3>
-<<<<<<< HEAD
               <p className="text-xs text-slate-500">
                 Manage leaves, multi-day vacations, and official holidays
               </p>
-=======
-              <p className="text-xs text-slate-500">Manage leaves, multi-day vacations, and official holidays</p>
->>>>>>> origin/main
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -995,7 +705,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-<<<<<<< HEAD
               <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
                 Leaves ({scheduleConfig.leaves?.length || 0})
               </h4>
@@ -1020,18 +729,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                         <span className="px-2 py-0.5 bg-amber-200 text-amber-800 font-bold rounded text-[10px]">
                           {leave.type}
                         </span>
-=======
-              <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Leaves ({scheduleConfig.leaves?.length || 0})</h4>
-              {scheduleConfig.leaves?.length === 0 ? (
-                <div className="p-6 bg-slate-50 rounded-2xl text-slate-400 text-xs text-center">No leaves recorded.</div>
-              ) : (
-                scheduleConfig.leaves?.map((leave: any) => (
-                  <div key={leave.id} className="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/80 flex items-center justify-between text-xs">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-amber-900">{leave.startDate} {leave.endDate && leave.endDate !== leave.startDate ? `to ${leave.endDate}` : ''}</span>
-                        <span className="px-2 py-0.5 bg-amber-200 text-amber-800 font-bold rounded text-[10px]">{leave.type}</span>
->>>>>>> origin/main
                       </div>
                       <p className="text-amber-800/80 mt-1">{leave.reason}</p>
                     </div>
@@ -1047,7 +744,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
             </div>
 
             <div className="space-y-3">
-<<<<<<< HEAD
               <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
                 Holidays ({scheduleConfig.holidays?.length || 0})
               </h4>
@@ -1076,21 +772,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-=======
-              <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Holidays ({scheduleConfig.holidays?.length || 0})</h4>
-              {scheduleConfig.holidays?.length === 0 ? (
-                <div className="p-6 bg-slate-50 rounded-2xl text-slate-400 text-xs text-center">No holidays recorded.</div>
-              ) : (
-                scheduleConfig.holidays?.map((hol: any) => (
-                  <div key={hol.id} className="p-4 bg-blue-50/60 rounded-2xl border border-blue-200/80 flex items-center justify-between text-xs">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-blue-900">{hol.startDate}</span>
-                        <span className="px-2 py-0.5 bg-blue-200 text-blue-800 font-bold rounded text-[10px]">Holiday</span>
-                      </div>
-                      <p className="text-blue-800/80 mt-1">{hol.reason}</p>
-                    </div>
->>>>>>> origin/main
                   </div>
                 ))
               )}
@@ -1099,26 +780,16 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
         </div>
       )}
 
-<<<<<<< HEAD
       {/* MODAL 1: ADD LEAVE */}
-=======
-      {/* ========================================================================= */}
-      {/* MODAL 1: ADD LEAVE                                                        */}
-      {/* ========================================================================= */}
->>>>>>> origin/main
       {showLeaveModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-fadeIn">
             <div className="p-5 bg-gradient-to-r from-amber-600 to-orange-600 text-white flex items-center justify-between">
               <h4 className="text-sm font-bold">Add Doctor Leave Period</h4>
-<<<<<<< HEAD
               <button
                 onClick={() => setShowLeaveModal(false)}
                 className="p-1 rounded-lg text-white/80 hover:text-white cursor-pointer"
               >
-=======
-              <button onClick={() => setShowLeaveModal(false)} className="p-1 rounded-lg text-white/80 hover:text-white cursor-pointer">
->>>>>>> origin/main
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -1127,11 +798,7 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                 <label className="block font-bold text-slate-700 mb-1">Leave Type</label>
                 <select
                   value={leaveType}
-<<<<<<< HEAD
                   onChange={(e) => setLeaveType(e.target.value as 'Single-Day' | 'Multi-Day')}
-=======
-                  onChange={(e: any) => setLeaveType(e.target.value)}
->>>>>>> origin/main
                   className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold"
                 >
                   <option value="Single-Day">Single-Day Leave</option>
@@ -1195,7 +862,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
         </div>
       )}
 
-<<<<<<< HEAD
       {/* MODAL 2: ADD HOLIDAY */}
       {showHolidayModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -1252,11 +918,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
       )}
 
       {/* MODAL 3: EXISTING APPOINTMENTS WARNING */}
-=======
-      {/* ========================================================================= */}
-      {/* MODAL 2: EXISTING APPOINTMENTS WARNING                                    */}
-      {/* ========================================================================= */}
->>>>>>> origin/main
       {showAppointmentWarningModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-fadeIn">
@@ -1265,20 +926,15 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                 <AlertTriangle className="w-6 h-6 text-white" />
                 <h4 className="text-sm font-bold">Existing Appointments Conflict</h4>
               </div>
-<<<<<<< HEAD
               <button
                 onClick={() => setShowAppointmentWarningModal(false)}
                 className="p-1 rounded-lg text-white/80 hover:text-white cursor-pointer"
               >
-=======
-              <button onClick={() => setShowAppointmentWarningModal(false)} className="p-1 rounded-lg text-white/80 hover:text-white cursor-pointer">
->>>>>>> origin/main
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="p-6 space-y-4 text-xs">
               <div className="p-4 bg-rose-50 rounded-2xl border border-rose-200 text-rose-900 font-semibold space-y-1">
-<<<<<<< HEAD
                 <p>
                   This doctor has <strong>{affectedAppointments.length} appointment(s)</strong>{' '}
                   scheduled on <strong>{pendingUnavailableDate}</strong>.
@@ -1287,17 +943,12 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                   Marking this doctor as {pendingUnavailableStatus} will affect scheduled patients.
                   Please choose an action:
                 </p>
-=======
-                <p>This doctor has <strong>{affectedAppointments.length} appointment(s)</strong> scheduled on <strong>{pendingUnavailableDate}</strong>.</p>
-                <p className="text-[11px] text-rose-700">Marking this doctor as {pendingUnavailableStatus} will affect scheduled patients. Please choose an action:</p>
->>>>>>> origin/main
               </div>
 
               <div className="space-y-2">
                 <button
                   type="button"
                   onClick={() => {
-<<<<<<< HEAD
                     void applyOverrideDirect(
                       pendingUnavailableDate || '',
                       pendingUnavailableStatus,
@@ -1308,21 +959,11 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                   className="w-full p-3 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 text-left flex items-center justify-between cursor-pointer"
                 >
                   <span>Flag Appointments for Rescheduling</span>
-=======
-                    // Reschedule action
-                    alert('Appointments marked for rescheduling and patients notified.');
-                    applyOverrideDirect(pendingUnavailableDate || '', pendingUnavailableStatus);
-                  }}
-                  className="w-full p-3 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 text-left flex items-center justify-between cursor-pointer"
-                >
-                  <span>Reschedule Appointments & Notify Patients</span>
->>>>>>> origin/main
                   <span className="text-rose-600">Recommended</span>
                 </button>
 
                 <button
                   type="button"
-<<<<<<< HEAD
                   onClick={async () => {
                     try {
                       await Promise.all(
@@ -1341,14 +982,6 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                         (err as Error).message || 'Failed to cancel affected appointments.'
                       );
                     }
-=======
-                  onClick={() => {
-                    // Cancel action
-                    affectedAppointments.forEach((apt) => {
-                      MedicareApiClient.updateAppointmentStatus(apt.id, 'Cancelled');
-                    });
-                    applyOverrideDirect(pendingUnavailableDate || '', pendingUnavailableStatus);
->>>>>>> origin/main
                   }}
                   className="w-full p-3 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl font-bold text-rose-600 text-left cursor-pointer"
                 >
@@ -1358,15 +991,10 @@ export const AdminDoctorSchedule: React.FC<AdminDoctorScheduleProps> = ({
                 <button
                   type="button"
                   onClick={() => {
-<<<<<<< HEAD
                     void applyOverrideDirect(
                       pendingUnavailableDate || '',
                       pendingUnavailableStatus
                     );
-=======
-                    // Keep existing
-                    applyOverrideDirect(pendingUnavailableDate || '', pendingUnavailableStatus);
->>>>>>> origin/main
                   }}
                   className="w-full p-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-center cursor-pointer"
                 >

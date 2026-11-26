@@ -33,24 +33,15 @@ interface PatientDashboardProps {
 export const PatientDashboard: React.FC<PatientDashboardProps> = ({
   currentUser,
   onNavigate,
-<<<<<<< HEAD
 }) => {
   const [appointments, setAppointments] = useState<Appointment[]>(() =>
     MedicareApiClient.getAppointmentsByPatient(currentUser.id)
   );
   const [doctors, setDoctors] = useState<Doctor[]>(() => MedicareApiClient.getDoctors());
-=======
-  onSelectDoctorToBook,
-}) => {
-  const appointments = MedicareApiClient.getAppointmentsByPatient(currentUser.id);
-  const records = MedicareApiClient.getRecords(currentUser.id);
-  const doctors = MedicareApiClient.getDoctors();
->>>>>>> origin/main
 
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-<<<<<<< HEAD
   const [uploadTitle, setUploadTitle] = useState('');
   const [uploadCategory, setUploadCategory] = useState<
     'Test Reports' | 'Prescriptions' | 'Consultations'
@@ -72,8 +63,6 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
     sync();
     return MedicareApiClient.subscribe(sync);
   }, [currentUser.id]);
-=======
->>>>>>> origin/main
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -371,28 +360,19 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
                   </div>
                   <h5 className="font-bold text-slate-900">Report Uploaded Successfully!</h5>
                   <p className="text-xs text-slate-500">
-<<<<<<< HEAD
                     Your report has been saved to your Medical Records vault.
-=======
-                    Your report has been encrypted and added to your Medical Records.
->>>>>>> origin/main
                   </p>
                   <button
                     onClick={() => {
                       setIsUploadOpen(false);
                       setUploadSuccess(false);
                     }}
-<<<<<<< HEAD
                     className="mt-4 px-5 py-2 bg-rose-600 text-white font-bold text-xs rounded-xl cursor-pointer"
-=======
-                    className="mt-4 px-5 py-2 bg-rose-600 text-white font-bold text-xs rounded-xl"
->>>>>>> origin/main
                   >
                     Done
                   </button>
                 </div>
               ) : (
-<<<<<<< HEAD
                 <form
                   onSubmit={async (e) => {
                     e.preventDefault();
@@ -468,33 +448,19 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
                       }}
                     />
                   </label>
-=======
-                <>
-                  <div className="border-2 border-dashed border-slate-300 hover:border-rose-400 rounded-2xl p-6 text-center transition-colors cursor-pointer bg-slate-50">
-                    <Upload className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                    <span className="text-xs font-bold text-slate-800 block">
-                      Choose PDF, JPG or PNG report
-                    </span>
-                    <span className="text-[10px] text-slate-400">Up to 15MB · HIPAA Secure</span>
-                  </div>
->>>>>>> origin/main
 
                   <div className="space-y-1">
                     <label className="text-[11px] font-bold text-slate-700">Report Title</label>
                     <input
                       type="text"
-<<<<<<< HEAD
                       required
                       value={uploadTitle}
                       onChange={(e) => setUploadTitle(e.target.value)}
-=======
->>>>>>> origin/main
                       placeholder="e.g. Complete Blood Count (CBC) Test"
                       className="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl outline-none focus:border-rose-400"
                     />
                   </div>
 
-<<<<<<< HEAD
                   <div className="space-y-1">
                     <label className="text-[11px] font-bold text-slate-700">Category</label>
                     <select
@@ -528,17 +494,10 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
                       type="button"
                       onClick={() => setIsUploadOpen(false)}
                       className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer"
-=======
-                  <div className="pt-2 flex justify-end gap-2">
-                    <button
-                      onClick={() => setIsUploadOpen(false)}
-                      className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
->>>>>>> origin/main
                     >
                       Cancel
                     </button>
                     <button
-<<<<<<< HEAD
                       type="submit"
                       disabled={isUploading}
                       className="px-5 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 disabled:opacity-60 rounded-xl cursor-pointer"
@@ -547,15 +506,6 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
                     </button>
                   </div>
                 </form>
-=======
-                      onClick={() => setUploadSuccess(true)}
-                      className="px-5 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl"
-                    >
-                      Upload & Save
-                    </button>
-                  </div>
-                </>
->>>>>>> origin/main
               )}
             </div>
           </div>
@@ -736,25 +686,14 @@ export const PatientDashboard: React.FC<PatientDashboardProps> = ({
                 </button>
                 {selectedAppointment.status === 'Upcoming' && (
                   <button
-<<<<<<< HEAD
                     onClick={async () => {
                       await MedicareApiClient.updateAppointmentStatus(
-=======
-                    onClick={() => {
-                      MedicareApiClient.updateAppointmentStatus(
->>>>>>> origin/main
                         selectedAppointment.id,
                         'Cancelled'
                       );
                       setSelectedAppointment(null);
-<<<<<<< HEAD
                     }}
                     className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-lg cursor-pointer"
-=======
-                      window.location.reload();
-                    }}
-                    className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold rounded-lg"
->>>>>>> origin/main
                   >
                     Cancel Appointment
                   </button>

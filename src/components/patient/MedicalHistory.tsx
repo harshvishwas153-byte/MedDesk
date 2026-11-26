@@ -1,26 +1,11 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
-=======
-import React, { useState } from 'react';
->>>>>>> origin/main
 import {
   FileText,
   Upload,
   Download,
-<<<<<<< HEAD
   X,
   Trash2,
   AlertCircle,
-=======
-  Eye,
-  Plus,
-  X,
-  FileCheck,
-  Calendar,
-  Building,
-  CheckCircle,
-  FileSpreadsheet,
->>>>>>> origin/main
 } from 'lucide-react';
 import { MedicalRecord, User } from '../../types';
 import { MedicareApiClient } from '../../services/api';
@@ -50,7 +35,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
   const [newDoctorName, setNewDoctorName] = useState('Dr. Priya Sharma');
   const [newNotes, setNewNotes] = useState('');
   const [selectedFileName, setSelectedFileName] = useState('');
-<<<<<<< HEAD
   const [selectedFileType, setSelectedFileType] = useState('PDF');
   const [selectedFileSize, setSelectedFileSize] = useState('1.4 MB');
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -61,8 +45,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
     sync();
     return MedicareApiClient.subscribe(sync);
   }, [currentUser.id]);
-=======
->>>>>>> origin/main
 
   // Filter records
   const filteredRecords = records.filter((rec) => {
@@ -74,7 +56,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
     generateMedicalRecordPdf(rec, currentUser);
   };
 
-<<<<<<< HEAD
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUploadError(null);
     const file = e.target.files?.[0];
@@ -119,23 +100,12 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
       await MedicareApiClient.uploadRecord({
         patientId: currentUser.id,
         title: newTitle.trim(),
-=======
-  const handleUploadSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle) return;
-
-    try {
-      const newRec = await MedicareApiClient.uploadRecord({
-        patientId: currentUser.id,
-        title: newTitle,
->>>>>>> origin/main
         date: new Date().toLocaleDateString('en-GB', {
           day: '2-digit',
           month: 'short',
           year: 'numeric',
         }),
         category: newCategory,
-<<<<<<< HEAD
         fileType: selectedFileType || 'PDF',
         fileSize: selectedFileSize || '1.4 MB',
         doctorName: newDoctorName.trim() || currentUser.name,
@@ -143,31 +113,16 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
         notes: newNotes.trim() || 'Routine clinical report uploaded by patient.',
       });
 
-=======
-        fileType: 'PDF',
-        fileSize: '1.4 MB',
-        doctorName: newDoctorName,
-        facility: 'City Care Hospital Labs',
-        notes: newNotes || 'Routine clinical report uploaded by patient.',
-      });
-
-      setRecords([newRec, ...records]);
->>>>>>> origin/main
       setShowUploadModal(false);
       setNewTitle('');
       setNewNotes('');
       setSelectedFileName('');
-<<<<<<< HEAD
       setSelectedFileType('PDF');
       setSelectedFileSize('1.4 MB');
     } catch (err) {
       setUploadError((err as Error).message || 'Failed to upload medical document.');
     } finally {
       setIsSubmitting(false);
-=======
-    } catch (err) {
-      console.error(err);
->>>>>>> origin/main
     }
   };
 
@@ -189,7 +144,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
         </button>
       </div>
 
-<<<<<<< HEAD
       {/* Filter Chips */}
       <div className="flex flex-wrap items-center gap-2">
         {(['All Records', 'Prescriptions', 'Test Reports', 'Consultations'] as const).map((tab) => {
@@ -200,42 +154,18 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
               : tab === 'Test Reports'
               ? 'Lab & Diagnostics'
               : tab;
-=======
-      {/* Filter Chips (Screen 8: All, Prescriptions, Lab Tests, Imaging, Others) */}
-      <div className="flex flex-wrap items-center gap-2">
-        {['All', 'Prescriptions', 'Lab Tests', 'Imaging', 'Others'].map((tab) => {
-          const isActive =
-            (tab === 'All' && selectedFilter === 'All Records') ||
-            (tab === 'Prescriptions' && selectedFilter === 'Prescriptions') ||
-            (tab === 'Lab Tests' && selectedFilter === 'Test Reports') ||
-            (tab === 'Imaging' && selectedFilter === 'Consultations') ||
-            (tab === 'Others' && false);
->>>>>>> origin/main
 
           return (
             <button
               key={tab}
-<<<<<<< HEAD
               onClick={() => setSelectedFilter(tab)}
-=======
-              onClick={() => {
-                if (tab === 'All') setSelectedFilter('All Records');
-                else if (tab === 'Prescriptions') setSelectedFilter('Prescriptions');
-                else if (tab === 'Lab Tests') setSelectedFilter('Test Reports');
-                else if (tab === 'Imaging') setSelectedFilter('Consultations');
-              }}
->>>>>>> origin/main
               className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                 isActive
                   ? 'bg-rose-600 text-white shadow-xs font-bold'
                   : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
               }`}
             >
-<<<<<<< HEAD
               {label}
-=======
-              {tab}
->>>>>>> origin/main
             </button>
           );
         })}
@@ -335,7 +265,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
                 </div>
               </div>
 
-<<<<<<< HEAD
               <div className="pt-2 flex items-center justify-between border-t border-slate-100">
                 <button
                   type="button"
@@ -344,9 +273,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
                 >
                   <Trash2 className="w-3.5 h-3.5" /> Delete
                 </button>
-=======
-              <div className="pt-2 flex items-center justify-end border-t border-slate-100">
->>>>>>> origin/main
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleDownload(selectedRecord)}
@@ -382,7 +308,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
             </div>
 
             <form onSubmit={handleUploadSubmit} className="p-6 space-y-4">
-<<<<<<< HEAD
               {uploadError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-700 flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -390,8 +315,6 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
                 </div>
               )}
 
-=======
->>>>>>> origin/main
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Document Title
@@ -410,11 +333,7 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Category</label>
                 <select
                   value={newCategory}
-<<<<<<< HEAD
                   onChange={(e) => setNewCategory(e.target.value as MedicalRecord['category'])}
-=======
-                  onChange={(e) => setNewCategory(e.target.value as any)}
->>>>>>> origin/main
                   className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-rose-400"
                 >
                   <option value="Test Reports">Test Reports</option>
@@ -438,33 +357,17 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-<<<<<<< HEAD
                   Select File (PDF, JPG, PNG · max 10MB)
-=======
-                  Select File (PDF, JPG, PNG)
->>>>>>> origin/main
                 </label>
                 <div className="border-2 border-dashed border-slate-200 hover:border-rose-400 rounded-xl p-4 text-center cursor-pointer bg-slate-50">
                   <Upload className="w-6 h-6 text-slate-400 mx-auto mb-1" />
                   <span className="text-xs text-slate-600 block font-medium">
-<<<<<<< HEAD
                     {selectedFileName || 'Click to select report'}
                   </span>
                   <input
                     type="file"
                     accept=".pdf,.png,.jpg,.jpeg"
                     onChange={handleFileChange}
-=======
-                    {selectedFileName || 'Click to select report or drag & drop'}
-                  </span>
-                  <input
-                    type="file"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setSelectedFileName(e.target.files[0].name);
-                      }
-                    }}
->>>>>>> origin/main
                     className="hidden"
                     id="file-input"
                   />
@@ -493,30 +396,20 @@ export const MedicalHistory: React.FC<MedicalHistoryProps> = ({
               <div className="pt-2 flex justify-end gap-2">
                 <button
                   type="button"
-<<<<<<< HEAD
                   onClick={() => {
                     setShowUploadModal(false);
                     setUploadError(null);
                   }}
-=======
-                  onClick={() => setShowUploadModal(false)}
->>>>>>> origin/main
                   className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-<<<<<<< HEAD
                   disabled={isSubmitting}
                   className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:bg-slate-300 text-white text-xs font-semibold rounded-lg shadow-2xs"
                 >
                   {isSubmitting ? 'Saving...' : 'Upload & Secure'}
-=======
-                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg shadow-2xs"
-                >
-                  Upload & Secure
->>>>>>> origin/main
                 </button>
               </div>
             </form>

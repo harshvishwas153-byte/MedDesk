@@ -17,7 +17,6 @@ import com.medicare.model.BillingSlip;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-<<<<<<< HEAD
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -30,19 +29,6 @@ public class PdfSlipGenerator {
     private static final DeviceRgb COLOR_NAVY = new DeviceRgb(15, 23, 42);
     private static final DeviceRgb COLOR_LIGHT = new DeviceRgb(248, 250, 252);
     private static final DeviceRgb COLOR_BORDER = new DeviceRgb(226, 232, 240);
-=======
-
-/**
- * Server-Side PDF Consultation Slip Generator using iText 7.
- * Renders the reference OPD Consultation & Billing Slip in Java.
- */
-public class PdfSlipGenerator {
-
-    private static final DeviceRgb COLOR_PRIMARY = new DeviceRgb(225, 29, 72); // Rose-600
-    private static final DeviceRgb COLOR_NAVY = new DeviceRgb(15, 23, 42); // Slate-900
-    private static final DeviceRgb COLOR_LIGHT = new DeviceRgb(248, 250, 252); // Slate-50
-    private static final DeviceRgb COLOR_BORDER = new DeviceRgb(226, 232, 240); // Slate-200
->>>>>>> origin/main
 
     public static byte[] generateSlipPdf(BillingSlip slip) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -52,25 +38,18 @@ public class PdfSlipGenerator {
         Document document = new Document(pdf);
         document.setMargins(20, 20, 20, 20);
 
-<<<<<<< HEAD
         String formattedDate = slip.getPaymentTimestamp() != null
                 ? slip.getPaymentTimestamp().toString()
                 : LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"));
         String paymentMode = slip.getPaymentMode() != null ? slip.getPaymentMode() : "UPI / Online Gateway";
         String paymentStatus = slip.getPaymentStatus() != null ? slip.getPaymentStatus() : "PAID";
 
-=======
->>>>>>> origin/main
         // Header Table
         Table headerTable = new Table(UnitValue.createPercentArray(new float[]{60, 40})).useAllAvailableWidth();
         headerTable.setBorder(Border.NO_BORDER);
 
         Cell brandCell = new Cell().setBorder(Border.NO_BORDER);
-<<<<<<< HEAD
         brandCell.add(new Paragraph("MedDesk Healthcare System")
-=======
-        brandCell.add(new Paragraph("MediCare+ Healthcare System")
->>>>>>> origin/main
                 .setFontSize(18).setBold().setFontColor(COLOR_PRIMARY));
         brandCell.add(new Paragraph("Better Care, Better Health · Multispecialty Clinical Network\nReg No: MC-DL-88219 · GSTIN: 07AAACH2412Q1ZX")
                 .setFontSize(8).setFontColor(ColorConstants.GRAY));
@@ -79,16 +58,11 @@ public class PdfSlipGenerator {
         Cell docMetaCell = new Cell().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT);
         docMetaCell.add(new Paragraph("OPD CONSULTATION SLIP")
                 .setFontSize(14).setBold().setFontColor(COLOR_NAVY));
-<<<<<<< HEAD
         docMetaCell.add(new Paragraph("Invoice: " + slip.getInvoiceId() + "\nDate: " + formattedDate)
-=======
-        docMetaCell.add(new Paragraph("Invoice: " + slip.getInvoiceId() + "\nDate: " + slip.getPaymentTimestamp())
->>>>>>> origin/main
                 .setFontSize(8).setFontColor(ColorConstants.GRAY));
         headerTable.addCell(docMetaCell);
         document.add(headerTable);
 
-<<<<<<< HEAD
         // Dynamic Status Badge
         boolean isPaid = "PAID".equalsIgnoreCase(paymentStatus);
         DeviceRgb badgeBg = isPaid ? new DeviceRgb(240, 253, 244) : new DeviceRgb(255, 251, 235);
@@ -101,15 +75,6 @@ public class PdfSlipGenerator {
                 .setPadding(6);
         statusCell.add(new Paragraph("STATUS: " + paymentStatus.toUpperCase() + " (" + paymentMode + ") · Booking Ref: " + slip.getAppointmentId())
                 .setFontSize(9).setBold().setFontColor(badgeText));
-=======
-        // Status Badge
-        Table statusTable = new Table(UnitValue.createPercentArray(new float[]{100})).useAllAvailableWidth();
-        Cell statusCell = new Cell().setBackgroundColor(new DeviceRgb(240, 253, 244))
-                .setBorder(new SolidBorder(new DeviceRgb(187, 247, 208), 1))
-                .setPadding(6);
-        statusCell.add(new Paragraph("STATUS: PAID & CONFIRMED (ONLINE / UPI) · Booking Ref: " + slip.getAppointmentId())
-                .setFontSize(9).setBold().setFontColor(new DeviceRgb(21, 128, 61)));
->>>>>>> origin/main
         statusTable.addCell(statusCell);
         document.add(statusTable);
 
@@ -134,20 +99,12 @@ public class PdfSlipGenerator {
         Table chargesTable = new Table(UnitValue.createPercentArray(new float[]{10, 45, 15, 15, 15})).useAllAvailableWidth();
         chargesTable.setMarginTop(12);
 
-<<<<<<< HEAD
-=======
-        // Header Row
->>>>>>> origin/main
         chargesTable.addHeaderCell(new Cell().setBackgroundColor(COLOR_NAVY).add(new Paragraph("#").setFontSize(8).setBold().setFontColor(ColorConstants.WHITE)));
         chargesTable.addHeaderCell(new Cell().setBackgroundColor(COLOR_NAVY).add(new Paragraph("Service / Description").setFontSize(8).setBold().setFontColor(ColorConstants.WHITE)));
         chargesTable.addHeaderCell(new Cell().setBackgroundColor(COLOR_NAVY).add(new Paragraph("Qty").setFontSize(8).setBold().setFontColor(ColorConstants.WHITE).setTextAlignment(TextAlignment.CENTER)));
         chargesTable.addHeaderCell(new Cell().setBackgroundColor(COLOR_NAVY).add(new Paragraph("Rate").setFontSize(8).setBold().setFontColor(ColorConstants.WHITE).setTextAlignment(TextAlignment.RIGHT)));
         chargesTable.addHeaderCell(new Cell().setBackgroundColor(COLOR_NAVY).add(new Paragraph("Amount (INR)").setFontSize(8).setBold().setFontColor(ColorConstants.WHITE).setTextAlignment(TextAlignment.RIGHT)));
 
-<<<<<<< HEAD
-=======
-        // Rows
->>>>>>> origin/main
         chargesTable.addCell(new Cell().add(new Paragraph("1").setFontSize(8)));
         chargesTable.addCell(new Cell().add(new Paragraph("Doctor Specialist Consultation\nClinical Evaluation").setFontSize(8)));
         chargesTable.addCell(new Cell().add(new Paragraph("1").setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
@@ -161,11 +118,7 @@ public class PdfSlipGenerator {
         chargesTable.addCell(new Cell().add(new Paragraph("Rs. " + slip.getVitalsFee()).setFontSize(8).setBold().setTextAlignment(TextAlignment.RIGHT)));
 
         chargesTable.addCell(new Cell().add(new Paragraph("3").setFontSize(8)));
-<<<<<<< HEAD
         chargesTable.addCell(new Cell().add(new Paragraph("Digital EHR & Health Vault Processing\nEncrypted Cloud Storage").setFontSize(8)));
-=======
-        chargesTable.addCell(new Cell().add(new Paragraph("Digital EHR & Health Vault Processing\nEncrypted HIPAA Cloud Storage").setFontSize(8)));
->>>>>>> origin/main
         chargesTable.addCell(new Cell().add(new Paragraph("1").setFontSize(8).setTextAlignment(TextAlignment.CENTER)));
         chargesTable.addCell(new Cell().add(new Paragraph("Rs. " + slip.getVaultFee()).setFontSize(8).setTextAlignment(TextAlignment.RIGHT)));
         chargesTable.addCell(new Cell().add(new Paragraph("Rs. " + slip.getVaultFee()).setFontSize(8).setBold().setTextAlignment(TextAlignment.RIGHT)));
@@ -178,20 +131,12 @@ public class PdfSlipGenerator {
 
         Cell paymentCell = new Cell().setBackgroundColor(COLOR_LIGHT).setBorder(new SolidBorder(COLOR_BORDER, 1)).setPadding(6);
         paymentCell.add(new Paragraph("PAYMENT VERIFICATION").setFontSize(8.5f).setBold().setFontColor(COLOR_NAVY));
-<<<<<<< HEAD
         paymentCell.add(new Paragraph("Mode: " + paymentMode + "\nTxn Ref: " + slip.getTransactionRef() + "\nStatus: " + paymentStatus)
-=======
-        paymentCell.add(new Paragraph("Mode: " + slip.getPaymentMode() + "\nTxn Ref: " + slip.getTransactionRef() + "\nStatus: SUCCESS (PAID IN FULL)")
->>>>>>> origin/main
                 .setFontSize(8).setFontColor(COLOR_NAVY));
         summaryTable.addCell(paymentCell);
 
         Cell totalCell = new Cell().setBackgroundColor(new DeviceRgb(254, 242, 242)).setBorder(new SolidBorder(new DeviceRgb(254, 205, 211), 1)).setPadding(6);
-<<<<<<< HEAD
         totalCell.add(new Paragraph((isPaid ? "TOTAL PAID: Rs. " : "AMOUNT DUE: Rs. ") + slip.getTotalAmount())
-=======
-        totalCell.add(new Paragraph("TOTAL PAID: Rs. " + slip.getTotalAmount())
->>>>>>> origin/main
                 .setFontSize(12).setBold().setFontColor(COLOR_PRIMARY).setTextAlignment(TextAlignment.RIGHT));
         totalCell.add(new Paragraph("GST (Healthcare Exempt): Rs. 0.00")
                 .setFontSize(7.5f).setFontColor(ColorConstants.GRAY).setTextAlignment(TextAlignment.RIGHT));
@@ -202,11 +147,7 @@ public class PdfSlipGenerator {
         document.add(new Paragraph("\nIMPORTANT PATIENT INSTRUCTIONS:\n1. Report to OPD Counter 15 minutes before time.\n2. Present this slip for priority entry.\n3. 24x7 Emergency Helpline: 1800-419-5566.")
                 .setFontSize(7.5f).setFontColor(ColorConstants.DARK_GRAY));
 
-<<<<<<< HEAD
         document.add(new Paragraph("\nDr. A. K. Verma - Medical Superintendent, MedDesk Central Multispecialty Hospital\nThis is a computer-generated official consultation slip.")
-=======
-        document.add(new Paragraph("\nDr. A. K. Verma - Medical Superintendent, MediCare+ Central Multispecialty Hospital\nThis is a computer-generated official consultation slip.")
->>>>>>> origin/main
                 .setFontSize(7).setFontColor(ColorConstants.GRAY).setTextAlignment(TextAlignment.CENTER));
 
         document.close();

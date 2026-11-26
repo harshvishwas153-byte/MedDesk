@@ -108,7 +108,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
   const [customPhotoUrl, setCustomPhotoUrl] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
-<<<<<<< HEAD
   const [saveError, setSaveError] = useState<string | null>(null);
   const [, setSyncTick] = useState(0);
 
@@ -122,12 +121,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
     });
   }, [currentUser.id]);
 
-=======
-  
-  const editSectionRef = useRef<HTMLDivElement>(null);
-  const modalFileInputRef = useRef<HTMLInputElement>(null);
-
->>>>>>> origin/main
   // Sync state if currentUser changes
   useEffect(() => {
     const doc = getDocRecord();
@@ -140,17 +133,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({
     setAge(currentUser.age || 28);
     setCity(currentUser.city || 'Bangalore, India');
     setAddress(currentUser.address || '74, Richmond Road, Ashok Nagar');
-<<<<<<< HEAD
     setEmergencyContactName(currentUser.emergencyContactName || 'Emergency Contact');
     setEmergencyContactPhone(currentUser.emergencyContactPhone || '');
     setAllergies(currentUser.allergies || '');
     setMedicalConditions(currentUser.medicalConditions || '');
-=======
-    setEmergencyContactName(currentUser.emergencyContactName || 'Rajesh Vishwas (Father)');
-    setEmergencyContactPhone(currentUser.emergencyContactPhone || '+91 98111 22334');
-    setAllergies(currentUser.allergies || 'Penicillin, Dust Mites');
-    setMedicalConditions(currentUser.medicalConditions || 'Mild Seasonal Asthma, Normal Blood Pressure');
->>>>>>> origin/main
 
     if (doc || currentUser.specialty) {
       setSpecialty(doc?.specialty || currentUser.specialty || 'Cardiologist');
@@ -164,7 +150,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
     }
   }, [currentUser]);
 
-<<<<<<< HEAD
   const appointments = isDoctor
     ? MedicareApiClient.getAppointmentsByDoctor(currentUser.id)
     : MedicareApiClient.getAppointmentsByPatient(currentUser.id);
@@ -231,59 +216,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({
       setCustomPhotoUrl('');
       setShowPhotoModal(false);
       await saveProfilePhoto(nextUrl);
-=======
-  const appointments = MedicareApiClient.getAppointmentsByPatient(currentUser.id);
-  const records = MedicareApiClient.getRecords(currentUser.id);
-  const consultations = MedicareApiClient.getConsultations(currentUser.id, currentUser.role);
-
-  // File Upload to Base64
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          const newImg = reader.result;
-          setAvatar(newImg);
-          setShowPhotoModal(false);
-          saveProfilePhoto(newImg);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const saveProfilePhoto = (newAvatarUrl: string) => {
-    setIsSaving(true);
-    if (isDoctor) {
-      MedicareApiClient.updateDoctorProfile(doctorRecord?.id || currentUser.id, {
-        avatar: newAvatarUrl,
-      });
-    } else {
-      MedicareApiClient.updateUserProfile(currentUser.id, {
-        avatar: newAvatarUrl,
-      });
-    }
-    setTimeout(() => {
-      setIsSaving(false);
-      setSavedSuccess(true);
-      setTimeout(() => setSavedSuccess(false), 3500);
-    }, 300);
-  };
-
-  const handleApplyCustomUrl = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (customPhotoUrl.trim()) {
-      setAvatar(customPhotoUrl.trim());
-      saveProfilePhoto(customPhotoUrl.trim());
-      setCustomPhotoUrl('');
-      setShowPhotoModal(false);
->>>>>>> origin/main
     }
   };
 
   // Main Save Function
-<<<<<<< HEAD
   const handleSave = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsSaving(true);
@@ -312,32 +248,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         setDoctorRecord(updatedDoc);
       } else {
         await MedicareApiClient.updateUserProfile(currentUser.id, {
-=======
-  const handleSave = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    setIsSaving(true);
-
-    try {
-      if (isDoctor) {
-        const updatedDoc = MedicareApiClient.updateDoctorProfile(doctorRecord?.id || currentUser.id, {
-          name: name.trim() || currentUser.name,
-          avatar,
-          phone: phone.trim(),
-          specialty: specialty.trim(),
-          department: department.trim(),
-          hospital: hospital.trim(),
-          education: education.trim(),
-          experienceYears: Number(experienceYears) || 10,
-          consultationFee: Number(consultationFee) || 500,
-          about: about.trim(),
-          gender,
-          bloodGroup,
-          availableDays,
-        });
-        setDoctorRecord(updatedDoc);
-      } else {
-        MedicareApiClient.updateUserProfile(currentUser.id, {
->>>>>>> origin/main
           name: name.trim() || currentUser.name,
           phone: phone.trim(),
           avatar,
@@ -353,32 +263,18 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         });
       }
 
-<<<<<<< HEAD
       setSavedSuccess(true);
       setShowEditDetailsModal(false);
       setTimeout(() => setSavedSuccess(false), 3500);
     } catch (err) {
       setSaveError((err as Error).message || 'Failed to save profile changes.');
     } finally {
-=======
-      setTimeout(() => {
-        setIsSaving(false);
-        setSavedSuccess(true);
-        setShowEditDetailsModal(false);
-        setTimeout(() => setSavedSuccess(false), 3500);
-      }, 300);
-    } catch (err) {
-      console.error('Save error:', err);
->>>>>>> origin/main
       setIsSaving(false);
     }
   };
 
   const handleOpenEditDetails = () => {
-<<<<<<< HEAD
     setSaveError(null);
-=======
->>>>>>> origin/main
     setShowEditDetailsModal(true);
   };
 
@@ -488,41 +384,28 @@ export const UserProfile: React.FC<UserProfileProps> = ({
             className="cursor-pointer hover:bg-rose-100/40 p-2 rounded-xl transition-colors"
             onClick={() => onNavigate(isDoctor ? 'doctor-appointments' : 'patient-appointments')}
           >
-<<<<<<< HEAD
             <div className="text-lg font-extrabold text-slate-900">{appointments.length}</div>
-=======
-            <div className="text-lg font-extrabold text-slate-900">{isDoctor ? 8 : appointments.length}</div>
->>>>>>> origin/main
             <div className="text-[11px] font-semibold text-slate-500">Appointments</div>
           </div>
           <div
             className="cursor-pointer hover:bg-rose-100/40 p-2 rounded-xl transition-colors"
             onClick={() => onNavigate(isDoctor ? 'doctor-patients' : 'patient-records')}
           >
-<<<<<<< HEAD
             <div className="text-lg font-extrabold text-slate-900">
               {isDoctor ? doctorPatientCount : records.length}
             </div>
-=======
-            <div className="text-lg font-extrabold text-slate-900">{isDoctor ? 5 : records.length}</div>
->>>>>>> origin/main
             <div className="text-[11px] font-semibold text-slate-500">{isDoctor ? 'Patients' : 'Medical Records'}</div>
           </div>
           <div
             className="cursor-pointer hover:bg-rose-100/40 p-2 rounded-xl transition-colors"
             onClick={() => onNavigate(isDoctor ? 'doctor-consultations' : 'patient-consultation')}
           >
-<<<<<<< HEAD
             <div className="text-lg font-extrabold text-slate-900">{consultations.length}</div>
-=======
-            <div className="text-lg font-extrabold text-slate-900">{consultations.length || 4}</div>
->>>>>>> origin/main
             <div className="text-[11px] font-semibold text-slate-500">Live Consultations</div>
           </div>
         </div>
       </div>
 
-<<<<<<< HEAD
       {/* Save Error Alert */}
       {saveError && (
         <div className="p-4 bg-rose-50 border border-rose-300 text-rose-800 text-xs sm:text-sm font-bold rounded-2xl flex items-center justify-between gap-3 animate-fadeIn shadow-sm">
@@ -540,8 +423,6 @@ export const UserProfile: React.FC<UserProfileProps> = ({
         </div>
       )}
 
-=======
->>>>>>> origin/main
       {/* Success Notification Alert */}
       {savedSuccess && (
         <div className="p-4 bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs sm:text-sm font-bold rounded-2xl flex items-center justify-between gap-3 animate-fadeIn shadow-sm">

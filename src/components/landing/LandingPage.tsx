@@ -92,15 +92,10 @@ interface LandingPageProps {
   onNavigate: (view: ViewMode) => void;
   onBookAppointment?: (doctorId?: string) => void;
   onSelectDoctorToBook?: (doctorId: string) => void;
-<<<<<<< HEAD
-=======
-  onOpenJavaRubric?: () => void;
->>>>>>> origin/main
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onNavigate,
-<<<<<<< HEAD
   onSelectDoctorToBook,
 }) => {
   const [doctors, setDoctors] = useState<Doctor[]>(() => MedicareApiClient.getDoctors());
@@ -114,16 +109,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     });
   }, []);
 
-=======
-  onBookAppointment,
-  onSelectDoctorToBook,
-  onOpenJavaRubric,
-}) => {
-  const doctors: Doctor[] = MedicareApiClient.getDoctors();
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-
->>>>>>> origin/main
   const handleNextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % BEST_DOCTORS_CAROUSEL.length);
   }, []);

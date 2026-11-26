@@ -1,10 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-<<<<<<< HEAD
 import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
-=======
-import { getFirestore } from 'firebase/firestore';
->>>>>>> origin/main
 import config from '../../firebase-applet-config.json';
 
 const firebaseConfig = {
@@ -19,7 +15,6 @@ const firebaseConfig = {
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app, config.firestoreDatabaseId || '(default)');
-<<<<<<< HEAD
 
 export enum OperationType {
   CREATE = 'create',
@@ -89,6 +84,4 @@ export async function testConnection(): Promise<boolean> {
   }
 }
 
-=======
->>>>>>> origin/main
 export default app;

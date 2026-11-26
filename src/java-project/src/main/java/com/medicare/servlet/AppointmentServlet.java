@@ -1,7 +1,6 @@
 package com.medicare.servlet;
 
 import com.google.gson.Gson;
-<<<<<<< HEAD
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.medicare.dao.AppointmentDAO;
@@ -16,13 +15,6 @@ import com.medicare.model.Doctor;
 import com.medicare.model.User;
 import com.medicare.util.NotificationThreadService;
 import com.medicare.util.ValidationUtil;
-=======
-import com.medicare.dao.AppointmentDAO;
-import com.medicare.model.Appointment;
-import com.medicare.model.BillingSlip;
-import com.medicare.model.User;
-import com.medicare.util.NotificationThreadService;
->>>>>>> origin/main
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -38,28 +30,19 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
-<<<<<<< HEAD
  * Appointment Servlet handling OPD booking, listing, clinical notes, cancellation,
  * conflict prevention, and asynchronous notification dispatch.
-=======
- * Appointment Servlet handling OPD booking, listing, status cancellation, and thread dispatch.
- * Rubric Criterion: Servlets & Web Integration + Multithreading
->>>>>>> origin/main
  */
 public class AppointmentServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private AppointmentDAO appointmentDAO;
-<<<<<<< HEAD
     private DoctorDAO doctorDAO;
-=======
->>>>>>> origin/main
     private Gson gson;
 
     @Override
     public void init() throws ServletException {
         this.appointmentDAO = new AppointmentDAO();
-<<<<<<< HEAD
         this.doctorDAO = new DoctorDAO();
         this.gson = new Gson();
     }
@@ -72,18 +55,12 @@ public class AppointmentServlet extends HttpServlet {
         return (User) session.getAttribute("currentUser");
     }
 
-=======
-        this.gson = new Gson();
-    }
-
->>>>>>> origin/main
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-<<<<<<< HEAD
         try {
             User currentUser = requireCurrentUser(request);
             boolean isAdmin = "ADMIN".equalsIgnoreCase(currentUser.getRole());
@@ -129,35 +106,6 @@ public class AppointmentServlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
-=======
-        String patientId = request.getParameter("patientId");
-        String appointmentId = request.getParameter("id");
-
-        HttpSession session = request.getSession(false);
-        if (patientId == null && session != null && session.getAttribute("currentUser") != null) {
-            User user = (User) session.getAttribute("currentUser");
-            patientId = user.getId();
-        }
-
-        try {
-            if (appointmentId != null) {
-                Appointment apt = appointmentDAO.findById(appointmentId);
-                response.getWriter().write(gson.toJson(apt));
-            } else if (patientId != null) {
-                List<Appointment> list = appointmentDAO.findByPatientId(patientId);
-                response.getWriter().write(gson.toJson(list));
-            } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                Map<String, String> err = new HashMap<>();
-                err.put("error", "Missing patientId or appointment ID");
-                response.getWriter().write(gson.toJson(err));
-            }
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            Map<String, String> err = new HashMap<>();
-            err.put("error", e.getMessage());
-            response.getWriter().write(gson.toJson(err));
->>>>>>> origin/main
         }
     }
 
@@ -166,7 +114,6 @@ public class AppointmentServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-<<<<<<< HEAD
         Map<String, Object> responseData = new HashMap<>();
 
         try (BufferedReader reader = request.getReader()) {
@@ -233,47 +180,6 @@ public class AppointmentServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             responseData.put("status", "error");
             responseData.put("message", e.getMessage());
-=======
-
-        BufferedReader reader = request.getReader();
-        Appointment apt = gson.fromJson(reader, Appointment.class);
-
-        if (apt.getId() == null || apt.getId().isEmpty()) {
-            apt.setId("APT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        }
-
-        if (apt.getFee() == null) {
-            apt.setFee(BigDecimal.valueOf(500.00));
-        }
-
-        // Generate Itemized Billing Slip matching reference template
-        BillingSlip slip = BillingSlip.fromAppointment(apt);
-
-        Map<String, Object> responseData = new HashMap<>();
-
-        try {
-            // Execute Database Transaction (atomic insertion of appointment + billing invoice)
-            boolean success = appointmentDAO.createAppointmentWithTransaction(apt, slip);
-
-            if (success) {
-                // Dispatch asynchronous confirmation in background worker thread
-                NotificationThreadService.dispatchBookingConfirmation(apt);
-
-                responseData.put("status", "success");
-                responseData.put("message", "Appointment successfully booked and verified.");
-                responseData.put("appointment", apt);
-                responseData.put("slip", slip);
-                response.setStatus(HttpServletResponse.SC_CREATED);
-            } else {
-                responseData.put("status", "error");
-                responseData.put("message", "Transaction failed.");
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
-        } catch (Exception e) {
-            responseData.put("status", "error");
-            responseData.put("message", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
->>>>>>> origin/main
         }
 
         response.getWriter().write(gson.toJson(responseData));
@@ -284,7 +190,6 @@ public class AppointmentServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-<<<<<<< HEAD
         Map<String, Object> res = new HashMap<>();
 
         try (BufferedReader reader = request.getReader()) {
@@ -343,23 +248,5 @@ public class AppointmentServlet extends HttpServlet {
         }
 
         response.getWriter().write(gson.toJson(res));
-=======
-
-        BufferedReader reader = request.getReader();
-        Map<String, String> payload = gson.fromJson(reader, Map.class);
-        String appointmentId = payload.get("id");
-        String status = payload.get("status");
-
-        Map<String, Object> res = new HashMap<>();
-        try {
-            boolean updated = appointmentDAO.updateStatus(appointmentId, status);
-            res.put("status", updated ? "success" : "not_found");
-            response.getWriter().write(gson.toJson(res));
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            res.put("error", e.getMessage());
-            response.getWriter().write(gson.toJson(res));
-        }
->>>>>>> origin/main
     }
 }

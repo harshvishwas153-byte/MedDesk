@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
 import { Clock, Plus, Trash2, AlertCircle } from 'lucide-react';
-=======
-import { Clock, Plus, Trash2 } from 'lucide-react';
->>>>>>> origin/main
 import { User, ViewMode } from '../../types';
 import { MedicareApiClient } from '../../services/api';
 
@@ -16,12 +12,8 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
   currentUser,
 }) => {
   const [activeDate, setActiveDate] = useState<number>(new Date().getDate());
-<<<<<<< HEAD
   const [, setTick] = useState(0);
   const [slotError, setSlotError] = useState<string | null>(null);
-=======
-  const [tick, setTick] = useState(0);
->>>>>>> origin/main
 
   React.useEffect(() => {
     return MedicareApiClient.subscribe(() => {
@@ -32,12 +24,9 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
   const [newSlotTime, setNewSlotTime] = useState('05:30 PM');
   const [showAddSlot, setShowAddSlot] = useState(false);
 
-<<<<<<< HEAD
   const resolvedDoctorId =
     MedicareApiClient.resolveDoctorIdForUser(currentUser) || currentUser.id || '';
 
-=======
->>>>>>> origin/main
   // Fetch real appointments for this doctor
   const appointments = MedicareApiClient.getAppointmentsByDoctor(currentUser.id || '');
 
@@ -62,13 +51,8 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
     const monthLong = today.toLocaleDateString('en-US', { month: 'long' }).toLowerCase();
     
     return appointments.filter((apt) => {
-<<<<<<< HEAD
       if (apt.status === 'Cancelled') return false;
       const dStr = apt.date.toLowerCase();
-=======
-      const dStr = apt.date.toLowerCase();
-      // Check if string contains day, month, and year
->>>>>>> origin/main
       const matchesDay = dStr.includes(String(dayNum));
       const matchesMonth = dStr.includes(monthShort) || dStr.includes(monthLong);
       const matchesYear = dStr.includes(String(currentYear));
@@ -76,7 +60,6 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
     });
   };
 
-<<<<<<< HEAD
   // Generate combined list of slots
   const getSlotsForDay = (dayNum: number) => {
     const times = MedicareApiClient.getDoctorSlots(resolvedDoctorId, getDateStr(dayNum));
@@ -85,17 +68,6 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
     return times.map((time) => {
       const cleanTime = time.replace(/\s+/g, '').toLowerCase();
       const matchedApt = dayAppointments.find((apt) => {
-=======
-  // Generate combined list of slots (base times, custom times, minus deleted, or matched with bookings)
-  const getSlotsForDay = (dayNum: number) => {
-    const times = MedicareApiClient.getDoctorSlots(currentUser.id || '', getDateStr(dayNum));
-    const dayAppointments = getAppointmentsForDay(dayNum);
-
-    return times.map(time => {
-      // Find if there is an appointment at this approximate time
-      const cleanTime = time.replace(/\s+/g, '').toLowerCase();
-      const matchedApt = dayAppointments.find(apt => {
->>>>>>> origin/main
         const aptTimeClean = apt.time.split('-')[0].replace(/\s+/g, '').toLowerCase();
         return aptTimeClean.includes(cleanTime) || cleanTime.includes(aptTimeClean);
       });
@@ -118,7 +90,6 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
 
   const slots = getSlotsForDay(activeDate);
 
-<<<<<<< HEAD
   const handleAddSlot = async () => {
     if (!newSlotTime.trim()) return;
     setSlotError(null);
@@ -134,18 +105,10 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
         setSlotError((err as Error).message || 'Failed to save slot.');
         return;
       }
-=======
-  const handleAddSlot = () => {
-    if (!newSlotTime.trim()) return;
-    const currentSlots = MedicareApiClient.getDoctorSlots(currentUser.id || '', getDateStr(activeDate));
-    if (!currentSlots.includes(newSlotTime.trim())) {
-      MedicareApiClient.saveDoctorSlots(currentUser.id || '', getDateStr(activeDate), [...currentSlots, newSlotTime.trim()]);
->>>>>>> origin/main
     }
     setShowAddSlot(false);
   };
 
-<<<<<<< HEAD
   const handleRemoveSlot = async (timeToRemove: string) => {
     setSlotError(null);
     const currentSlots = MedicareApiClient.getDoctorSlots(resolvedDoctorId, getDateStr(activeDate));
@@ -158,15 +121,6 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
     } catch (err) {
       setSlotError((err as Error).message || 'Failed to remove slot.');
     }
-=======
-  const handleRemoveSlot = (timeToRemove: string) => {
-    const currentSlots = MedicareApiClient.getDoctorSlots(currentUser.id || '', getDateStr(activeDate));
-    MedicareApiClient.saveDoctorSlots(
-      currentUser.id || '',
-      getDateStr(activeDate),
-      currentSlots.filter((t) => t !== timeToRemove)
-    );
->>>>>>> origin/main
   };
 
   // Previous month trailing spaces
@@ -258,7 +212,6 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
               </span>
             </div>
 
-<<<<<<< HEAD
             {slotError && (
               <div className="mb-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
@@ -266,8 +219,6 @@ export const DoctorSchedule: React.FC<DoctorScheduleProps> = ({
               </div>
             )}
 
-=======
->>>>>>> origin/main
             <div className="space-y-2.5">
               {slots.length === 0 ? (
                 <div className="text-center py-8 text-slate-400 text-xs">

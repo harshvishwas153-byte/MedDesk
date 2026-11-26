@@ -4,11 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
 import { Appointment, User, ViewMode } from './types';
-=======
-import { Appointment, User, UserRole, ViewMode } from './types';
->>>>>>> origin/main
 import { MedicareApiClient } from './services/api';
 
 // Common Components
@@ -17,10 +13,6 @@ import { Sidebar } from './components/common/Sidebar';
 import { MobileBottomNav } from './components/common/MobileBottomNav';
 import { OfflineIndicator } from './components/common/OfflineIndicator';
 import { UserProfile } from './components/common/UserProfile';
-<<<<<<< HEAD
-=======
-import { JavaRubricModal } from './components/common/JavaRubricModal';
->>>>>>> origin/main
 
 // Landing & Auth
 import { LandingPage } from './components/landing/LandingPage';
@@ -49,7 +41,6 @@ import { AdminDoctorManagement } from './components/admin/AdminDoctorManagement'
 import { AdminDoctorSchedule } from './components/admin/AdminDoctorSchedule';
 import { AdminAppointmentManagement } from './components/admin/AdminAppointmentManagement';
 
-<<<<<<< HEAD
 function getDefaultDashboardForRole(role: User['role']): ViewMode {
   if (role === 'ADMIN') return 'admin-dashboard';
   if (role === 'DOCTOR') return 'doctor-dashboard';
@@ -75,22 +66,12 @@ export default function App() {
   const [isBootstrapping, setIsBootstrapping] = useState<boolean>(!MedicareApiClient.isInitialized());
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-=======
-export default function App() {
-  // Navigation & session state
-  const [currentView, setCurrentView] = useState<ViewMode>('landing');
-  const [currentUser, setCurrentUser] = useState<User | null>(MedicareApiClient.getCurrentUser());
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [isJavaRubricOpen, setIsJavaRubricOpen] = useState(false);
->>>>>>> origin/main
 
   const [selectedDoctorIdToBook, setSelectedDoctorIdToBook] = useState<string | undefined>(
     undefined
   );
   const [lastBookedAppointment, setLastBookedAppointment] = useState<Appointment | null>(null);
 
-<<<<<<< HEAD
   useEffect(() => {
     const unsubscribe = MedicareApiClient.subscribe(() => {
       setCurrentUser(MedicareApiClient.getCurrentUser());
@@ -102,21 +83,10 @@ export default function App() {
         setCurrentUser(restored);
       }
       setIsBootstrapping(false);
-=======
-  // Initialize live Firestore database sync and subscribe to real-time updates
-  useEffect(() => {
-    MedicareApiClient.initFirestore();
-    const unsubscribe = MedicareApiClient.subscribe(() => {
-      setCurrentUser(MedicareApiClient.getCurrentUser());
->>>>>>> origin/main
     });
     return unsubscribe;
   }, []);
 
-<<<<<<< HEAD
-=======
-  // Navigation dispatcher with auth enforcement
->>>>>>> origin/main
   const handleNavigate = (view: ViewMode) => {
     const publicViews: ViewMode[] = ['landing', 'login', 'signup'];
     const activeUser = MedicareApiClient.getCurrentUser();
@@ -128,7 +98,6 @@ export default function App() {
       return;
     }
 
-<<<<<<< HEAD
     if (activeUser && !isViewPermittedForUser(view, activeUser)) {
       setCurrentView(getDefaultDashboardForRole(activeUser.role));
       setIsMobileSidebarOpen(false);
@@ -136,14 +105,11 @@ export default function App() {
       return;
     }
 
-=======
->>>>>>> origin/main
     setCurrentView(view);
     setIsMobileSidebarOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-<<<<<<< HEAD
   const handleLoginSuccess = (user: User, targetView: ViewMode) => {
     setCurrentUser(user);
     setCurrentView(
@@ -174,69 +140,22 @@ export default function App() {
     setCurrentView('patient-book');
   };
 
-=======
-  // Role Switcher
-  const handleRoleChange = (newRole: UserRole) => {
-    const user = MedicareApiClient.switchUserRole(newRole);
-    setCurrentUser(user);
-
-    if (newRole === 'ADMIN') {
-      setCurrentView('admin-dashboard');
-    } else if (newRole === 'DOCTOR') {
-      setCurrentView('doctor-dashboard');
-    } else {
-      setCurrentView('patient-dashboard');
-    }
-  };
-
-  // Login handler
-  const handleLoginSuccess = (user: User, targetView: ViewMode) => {
-    setCurrentUser(user);
-    setCurrentView(targetView);
-  };
-
-  // Logout handler
-  const handleLogout = () => {
-    MedicareApiClient.logout();
-    setCurrentView('landing');
-  };
-
-  // Start booking appointment from doctor card or button
-  const handleStartBooking = (doctorId?: string) => {
-    setSelectedDoctorIdToBook(doctorId);
-    setCurrentView('patient-book');
-  };
-
-  // Booking confirmed handler
->>>>>>> origin/main
   const handleBookingSuccess = (appointment: Appointment) => {
     setLastBookedAppointment(appointment);
     setCurrentView('appointment-confirmed');
   };
 
   const renderAppContent = () => {
-<<<<<<< HEAD
-=======
-    // 1. Full-screen Landing Page (Screenshot 1)
->>>>>>> origin/main
     if (currentView === 'landing') {
       return (
         <LandingPage
           onNavigate={handleNavigate}
           onBookAppointment={handleStartBooking}
-<<<<<<< HEAD
           onSelectDoctorToBook={setSelectedDoctorIdToBook}
-=======
-          onOpenJavaRubric={() => setIsJavaRubricOpen(true)}
->>>>>>> origin/main
         />
       );
     }
 
-<<<<<<< HEAD
-=======
-    // 2. Full-screen Login/Signup Page
->>>>>>> origin/main
     if (currentView === 'login' || currentView === 'signup') {
       return (
         <LoginPage
@@ -247,7 +166,6 @@ export default function App() {
       );
     }
 
-<<<<<<< HEAD
     if (isBootstrapping && !currentUser) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -259,9 +177,6 @@ export default function App() {
       );
     }
 
-=======
-    // 3. Authenticated App Shell with Header, Sidebar, and View Content
->>>>>>> origin/main
     if (!currentUser) {
       return (
         <LoginPage
@@ -272,7 +187,6 @@ export default function App() {
       );
     }
 
-<<<<<<< HEAD
     const effectiveView = isViewPermittedForUser(currentView, currentUser)
       ? currentView
       : getDefaultDashboardForRole(currentUser.role);
@@ -298,46 +212,15 @@ export default function App() {
           <Sidebar
             currentUser={currentUser}
             currentView={effectiveView}
-=======
-    return (
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Top Header */}
-        <Header
-          currentUser={currentUser}
-          currentView={currentView}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onRoleChange={handleRoleChange}
-          onNavigate={handleNavigate}
-          onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          onOpenJavaRubric={() => setIsJavaRubricOpen(true)}
-        />
-
-        <div className="flex-1 flex w-full">
-          {/* Left Sidebar (Desktop & Mobile Drawer) */}
-          <Sidebar
-            currentUser={currentUser}
-            currentView={currentView}
->>>>>>> origin/main
             onNavigate={handleNavigate}
             onLogout={handleLogout}
             isMobileOpen={isMobileSidebarOpen}
             onCloseMobile={() => setIsMobileSidebarOpen(false)}
-<<<<<<< HEAD
           />
 
           <main className="flex-1 min-w-0 p-3 sm:p-5 lg:p-8 pb-24 lg:pb-12">
             {/* Patient Views */}
             {effectiveView === 'patient-dashboard' && (
-=======
-            onOpenJavaRubric={() => setIsJavaRubricOpen(true)}
-          />
-
-          {/* Main Content Area */}
-          <main className="flex-1 min-w-0 p-3 sm:p-5 lg:p-8 pb-24 lg:pb-12">
-            {/* Patient Views */}
-            {currentView === 'patient-dashboard' && (
->>>>>>> origin/main
               <PatientDashboard
                 currentUser={currentUser}
                 onNavigate={handleNavigate}
@@ -345,22 +228,14 @@ export default function App() {
               />
             )}
 
-<<<<<<< HEAD
             {effectiveView === 'patient-find-doctors' && (
-=======
-            {currentView === 'patient-find-doctors' && (
->>>>>>> origin/main
               <FindDoctors
                 onNavigate={handleNavigate}
                 onSelectDoctorToBook={handleStartBooking}
               />
             )}
 
-<<<<<<< HEAD
             {effectiveView === 'patient-book' && (
-=======
-            {currentView === 'patient-book' && (
->>>>>>> origin/main
               <BookAppointment
                 currentUser={currentUser}
                 preSelectedDoctorId={selectedDoctorIdToBook}
@@ -369,7 +244,6 @@ export default function App() {
               />
             )}
 
-<<<<<<< HEAD
             {(effectiveView === 'appointment-confirmed' || effectiveView === 'patient-confirmation') &&
               (confirmationAppointment ? (
                 <AppointmentConfirmation
@@ -441,142 +315,12 @@ export default function App() {
 
             {effectiveView === 'admin-appointments' && (
               <AdminAppointmentManagement onNavigate={handleNavigate} />
-=======
-            {(currentView === 'appointment-confirmed' || currentView === 'patient-confirmation') && (
-              <AppointmentConfirmation
-                appointment={lastBookedAppointment || {
-                  id: 'apt-101',
-                  patientId: currentUser.id,
-                  patientName: currentUser.name,
-                  patientEmail: currentUser.email,
-                  doctorId: 'doc-sarah',
-                  doctorName: 'Dr. Sarah Johnson',
-                  doctorAvatar: '/src/assets/images/dr_sarah_johnson_1790494049182.jpg',
-                  department: 'General Medicine',
-                  date: 'Wed, 17 Sep 2026',
-                  time: '10:00 AM - 10:30 AM',
-                  status: 'Upcoming',
-                  reason: 'General health checkup and fatigue consultation',
-                  hospital: 'City Care Hospital, Block B, Floor 2',
-                  fee: 500,
-                  consultationType: 'In-Clinic',
-                }}
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'patient-consultation' && (
-              <TextConsultation
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'patient-records' && (
-              <MedicalHistory
-                currentUser={currentUser}
-              />
-            )}
-
-            {currentView === 'patient-appointments' && (
-              <MyAppointments
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'patient-notifications' && (
-              <NotificationsPage
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {(currentView === 'patient-profile' || currentView === 'patient-settings' || currentView === 'doctor-profile') && (
-              <UserProfile
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {/* Doctor Views */}
-            {currentView === 'doctor-dashboard' && (
-              <DoctorDashboard
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'doctor-schedule' && (
-              <DoctorSchedule
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'doctor-appointments' && (
-              <DoctorDashboard
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'doctor-consultations' && (
-              <DoctorConsultation
-                currentUser={currentUser}
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'doctor-patients' && (
-              <DoctorPatients
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {/* Admin Views */}
-            {currentView === 'admin-dashboard' && (
-              <AdminDashboard
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'admin-users' && (
-              <AdminUserManagement
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'admin-doctors' && (
-              <AdminDoctorManagement
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'admin-doctor-schedule' && (
-              <AdminDoctorSchedule
-                onNavigate={handleNavigate}
-              />
-            )}
-
-            {currentView === 'admin-appointments' && (
-              <AdminAppointmentManagement
-                onNavigate={handleNavigate}
-              />
->>>>>>> origin/main
             )}
           </main>
         </div>
 
-<<<<<<< HEAD
         <MobileBottomNav
           currentView={effectiveView}
-=======
-        {/* Mobile Bottom Navigation Bar (Screens < lg) */}
-        <MobileBottomNav
-          currentView={currentView}
->>>>>>> origin/main
           userRole={currentUser.role}
           onNavigate={handleNavigate}
         />
@@ -587,18 +331,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
       {renderAppContent()}
-<<<<<<< HEAD
       <OfflineIndicator />
-=======
-
-      {/* Connectivity Drop Alert */}
-      <OfflineIndicator />
-
-      {/* Java Web Project & Rubric 2 Compliance Hub Modal */}
-      {isJavaRubricOpen && (
-        <JavaRubricModal onClose={() => setIsJavaRubricOpen(false)} />
-      )}
->>>>>>> origin/main
     </div>
   );
 }

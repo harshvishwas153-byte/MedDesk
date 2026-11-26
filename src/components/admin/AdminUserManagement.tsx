@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import {
   Search,
@@ -8,10 +7,6 @@ import {
   AlertCircle,
   CheckCircle2,
 } from 'lucide-react';
-=======
-import React, { useState } from 'react';
-import { Search, UserPlus, Shield, X } from 'lucide-react';
->>>>>>> origin/main
 import { User, ViewMode } from '../../types';
 import { MedicareApiClient } from '../../services/api';
 
@@ -19,20 +14,13 @@ interface AdminUserManagementProps {
   onNavigate: (view: ViewMode) => void;
 }
 
-<<<<<<< HEAD
 export const AdminUserManagement: React.FC<AdminUserManagementProps> = () => {
-=======
-export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
-  onNavigate,
-}) => {
->>>>>>> origin/main
   const [users, setUsers] = useState<User[]>(MedicareApiClient.getUsers());
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<'All' | 'PATIENT' | 'DOCTOR' | 'ADMIN'>('All');
   const [showAddModal, setShowAddModal] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-<<<<<<< HEAD
   const [role, setRole] = useState<'PATIENT' | 'DOCTOR'>('PATIENT');
   const [password, setPassword] = useState('');
 
@@ -57,9 +45,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
       setUsers(MedicareApiClient.getUsers());
     });
   }, []);
-=======
-  const [role, setRole] = useState<'PATIENT' | 'DOCTOR' | 'ADMIN'>('PATIENT');
->>>>>>> origin/main
 
   const filtered = users.filter((u) => {
     const matchesSearch =
@@ -69,7 +54,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     return matchesSearch && matchesRole;
   });
 
-<<<<<<< HEAD
   const handleToggleStatus = async (id: string) => {
     setErrorMsg(null);
     try {
@@ -138,31 +122,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
     } finally {
       setIsSubmitting(false);
     }
-=======
-  const handleToggleStatus = (id: string) => {
-    const updated = MedicareApiClient.toggleUserStatus(id);
-    setUsers(updated);
-  };
-
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !email) return;
-
-    const newUser: User = {
-      id: `usr-${Date.now()}`,
-      name,
-      email,
-      role,
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-      status: 'Active',
-    };
-    const updated = [newUser, ...users];
-    localStorage.setItem('medicare_users_v1', JSON.stringify(updated));
-    setUsers(updated);
-    setShowAddModal(false);
-    setName('');
-    setEmail('');
->>>>>>> origin/main
   };
 
   return (
@@ -176,14 +135,10 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </div>
 
         <button
-<<<<<<< HEAD
           onClick={() => {
             setErrorMsg(null);
             setShowAddModal(true);
           }}
-=======
-          onClick={() => setShowAddModal(true)}
->>>>>>> origin/main
           className="flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-xl shadow-2xs transition-all cursor-pointer self-start sm:self-auto"
         >
           <UserPlus className="w-4 h-4" />
@@ -191,7 +146,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </button>
       </div>
 
-<<<<<<< HEAD
       {errorMsg && (
         <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium rounded-xl flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -239,8 +193,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </div>
       )}
 
-=======
->>>>>>> origin/main
       {/* Filter and search bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/90">
         <div className="relative w-full sm:w-80">
@@ -254,11 +206,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
           />
         </div>
 
-<<<<<<< HEAD
         <div className="flex items-center gap-1.5 self-start sm:self-auto flex-wrap">
-=======
-        <div className="flex items-center gap-1.5 self-start sm:self-auto">
->>>>>>> origin/main
           {(['All', 'PATIENT', 'DOCTOR', 'ADMIN'] as const).map((r) => (
             <button
               key={r}
@@ -322,7 +270,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                     </span>
                   </td>
                   <td className="py-3 px-6 text-right">
-<<<<<<< HEAD
                     <div className="inline-flex items-center gap-2">
                       <button
                         type="button"
@@ -346,18 +293,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                         </button>
                       )}
                     </div>
-=======
-                    <button
-                      onClick={() => handleToggleStatus(user.id)}
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-lg border transition-colors cursor-pointer ${
-                        user.status === 'Active'
-                          ? 'text-rose-600 border-rose-200 hover:bg-rose-50'
-                          : 'text-emerald-600 border-emerald-200 hover:bg-emerald-50'
-                      }`}
-                    >
-                      {user.status === 'Active' ? 'Deactivate' : 'Activate'}
-                    </button>
->>>>>>> origin/main
                   </td>
                 </tr>
               ))}
@@ -366,10 +301,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
         </div>
       </div>
 
-<<<<<<< HEAD
       {/* Add User Modal */}
-=======
->>>>>>> origin/main
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
@@ -377,11 +309,7 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
               <h4 className="text-sm font-bold text-slate-900">Add User Record</h4>
               <button
                 onClick={() => setShowAddModal(false)}
-<<<<<<< HEAD
                 className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-=======
-                className="text-slate-400 hover:text-slate-600 p-1"
->>>>>>> origin/main
               >
                 <X className="w-5 h-5" />
               </button>
@@ -415,16 +343,11 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Role</label>
                 <select
                   value={role}
-<<<<<<< HEAD
                   onChange={(e) => setRole(e.target.value as 'PATIENT' | 'DOCTOR')}
-=======
-                  onChange={(e) => setRole(e.target.value as any)}
->>>>>>> origin/main
                   className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-rose-400"
                 >
                   <option value="PATIENT">Patient</option>
                   <option value="DOCTOR">Doctor</option>
-<<<<<<< HEAD
                 </select>
               </div>
               <div>
@@ -440,26 +363,16 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                   className="w-full p-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-rose-400"
                 />
               </div>
-=======
-                  <option value="ADMIN">Admin</option>
-                </select>
-              </div>
->>>>>>> origin/main
               <div className="pt-2 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-<<<<<<< HEAD
                   className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer"
-=======
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg"
->>>>>>> origin/main
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-<<<<<<< HEAD
                   disabled={isSubmitting}
                   className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-xs font-semibold rounded-lg shadow-2xs cursor-pointer"
                 >
@@ -544,11 +457,6 @@ export const AdminUserManagement: React.FC<AdminUserManagementProps> = ({
                   className="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-60 text-white text-xs font-semibold rounded-lg shadow-2xs cursor-pointer"
                 >
                   {isSubmitting ? 'Saving...' : 'Update User'}
-=======
-                  className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg shadow-2xs"
-                >
-                  Save User
->>>>>>> origin/main
                 </button>
               </div>
             </form>
