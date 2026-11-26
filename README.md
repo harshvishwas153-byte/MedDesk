@@ -1,3 +1,4 @@
+<img width="1906" height="955" alt="Banner" src="https://github.com/user-attachments/assets/1f80b113-22fa-4e84-abaf-dc1becaf0e49" />
 # 🏥 MedDesk — Smart OPD Patient Care & Clinic Management System
 
 **MedDesk** is a full-stack, web-based OPD Patient Care and Clinic Management System designed to digitize hospital operations and simplify communication between patients, doctors, and administrators.
