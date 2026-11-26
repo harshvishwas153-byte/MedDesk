@@ -1,112 +1,174 @@
 # 🏥 MedDesk — Smart OPD Patient Care & Clinic Management System
 
-MedDesk is a modern, high-fidelity, and full-featured OPD patient care and clinical queue management platform. It facilitates a real-time, paperless healthcare flow between patients, doctors, and hospital administrators. Powered by a persistent Firestore Cloud Database, it ensures instant state synchronization across all modules.
+**MedDesk** is a full-stack, web-based OPD Patient Care and Clinic Management System designed to digitize hospital operations and simplify communication between patients, doctors, and administrators.
+
+The platform provides appointment scheduling, patient records management, doctor consultations, electronic prescriptions, billing support, and real-time patient-doctor communication through a modern, responsive interface.
 
 ---
 
 ## 🚀 Key Features
 
 ### 👤 Patient Module
-* **Interactive Specialist Booking**: Browse doctors, view real-time available time slots, filter by specialty, and schedule appointments instantly.
-* **Smart OPD Consultation Slips**: Automatically generate beautiful official OPD slips with clinical breakdowns and custom receipt references.
-* **Offline PDF Downloads**: Download and print billing slips and prescriptions in professional PDF layouts.
-* **Live Text Consultations**: Chat with attending doctors with attachment support and direct messaging.
-* **Electronic Health Records (EHR)**: Securely store and access medical histories, past prescriptions, and diagnostic logs.
+- **Doctor Discovery:** Browse doctors and explore available medical specialties.
+- **Smart Appointment Booking:** Schedule appointments and select available consultation slots.
+- **Appointment Management:** View, track, and manage upcoming and previous appointments.
+- **Digital OPD Slips:** Generate professional consultation and billing slips.
+- **PDF Downloads:** Download and print prescriptions and consultation documents.
+- **Doctor-Patient Chat:** Communicate directly with attending doctors through text messaging.
+- **Electronic Health Records:** Access medical history, prescriptions, and diagnostic information.
 
 ### 🩺 Doctor Module
-* **Dynamic Clinic Schedule Planner**: Configure active consultation days and add or delete timeslots dynamically with live cross-client synchronization.
-* **EHR Management**: Directly issue medical prescriptions, write care advice, and upload clinical history files for patients.
-* **OPD Queue Monitor**: Oversee live patient arrivals, mark appointments as completed, or trigger instant diagnostic audits.
-* **Patient Assistance Portal**: Provide instant consultation advice, review patient attachments, and resolve queries over text consultation.
+- **Doctor Dashboard:** View appointments, patient information, and consultation activity.
+- **Dynamic Schedule Management:** Configure consultation days and available time slots.
+- **OPD Queue Management:** Monitor patient appointments and update consultation status.
+- **Electronic Prescriptions:** Create prescriptions and provide medical advice.
+- **Patient Records:** Access relevant patient medical histories and consultation details.
+- **Direct Patient Communication:** Respond to patient messages and consultation queries.
 
 ### 👑 Administrator Module
-* **Hospital Appointment Registry**: A centralized, real-time dashboard for auditing, filtering, and managing appointments across all OPD wards.
-* **System-Wide Analytics**: Monitor department performance, daily consultation loads, and hospital revenue metrics.
+- **Centralized Dashboard:** Monitor hospital operations and appointment activity.
+- **Appointment Registry:** View and manage appointments across departments.
+- **User Management:** Manage patient and doctor accounts.
+- **Hospital Analytics:** Monitor consultation activity and operational metrics.
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+## 💬 Special Innovation — Doctor-Patient Live Chat
 
-* **Frontend**: React 18, Vite, TypeScript
-* **Styling**: Tailwind CSS
-* **Database & Auth**: Google Cloud Firestore & Firebase Auth (real-time listeners enabled)
-* **PDF Engine**: jsPDF (custom professional healthcare layouts)
-* **Icons**: Lucide React
+MedDesk introduces an integrated communication feature that connects patients directly with their attending doctors.
 
----
+Key capabilities:
+- Direct text-based communication.
+- Consultation-related messaging.
+- Attachment support where enabled.
+- Centralized conversation management.
+- Convenient follow-up communication.
 
-## 🌐 Live Application & Local Server Links
-
-
-- **Local Server**: `http://localhost:3000` (run `npm run dev` or `npm run start`)
+**Innovation Goal:** Reduce communication gaps between patients and doctors while making healthcare assistance more accessible.
 
 ---
 
-## 📦 Local Installation & Setup
+## 🛠️ Technology Stack
 
-Follow these simple steps to run MedDesk on your local computer:
+| Category | Technology |
+|---|---|
+| Frontend | React 18, TypeScript |
+| Build Tool | Vite |
+| Styling | Tailwind CSS |
+| Backend | Node.js, Express.js |
+| Authentication | Custom authentication and Firebase integration |
+| Local Data Persistence | JSON-based server storage |
+| Database Schema | MySQL SQL schema |
+| PDF Generation | jsPDF |
+| Icons | Lucide React |
 
-### **Prerequisites**
-Make sure you have **Node.js (v18+)** installed. Check using:
+---
+
+## 🏗️ Project Architecture
+
+MedDesk follows a modular architecture that separates the frontend, backend services, data management, and application modules.
+
+```text
+MedDesk/
+│
+├── public/
+│
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── admin/
+│   │   ├── common/
+│   │   ├── doctor/
+│   │   └── patient/
+│   │
+│   ├── data/
+│   ├── hooks/
+│   ├── lib/
+│   ├── services/
+│   ├── types/
+│   ├── utils/
+│   │
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+│
+├── tests/
+│   └── api.test.ts
+│
+├── server.ts
+├── meddesk.sql
+├── firebase-applet-config.json
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── .env.example
+└── README.md
+```
+
+---
+
+## ⚙️ Installation and Setup
+
+### Prerequisites
+
+Make sure you have installed:
+
+- Node.js (v18 or above)
+- npm
+- Git
+
+Verify your installation:
+
 ```bash
 node -v
 npm -v
+git --version
 ```
 
-### **1. Clone and Navigate to the Repository**
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/harshvishwas153-byte/MedDesk.git
+
 cd MedDesk
 ```
 
-### **2. Install Dependencies**
+### 2. Install Dependencies
+
 ```bash
 npm install
 ```
 
-### **3. Configure Environment Variables**
-Create a `.env` file in the root directory (you can copy `.env.example` as a starting point) and add your configuration details.
+### 3. Configure Environment Variables
 
-### **4. Start the Development Server**
+Create a `.env` file in the project root using `.env.example` as a reference.
+
+Add the required application configuration and credentials.
+
+**Important:** Never commit private API keys, passwords, or service credentials to GitHub.
+
+### 4. Start the Development Server
+
 ```bash
 npm run dev
 ```
-Open your browser and navigate to **`http://localhost:3000`** 
 
-### **5. Build for Production**
-To generate optimized production-ready files:
+Open your browser:
+
+```text
+http://localhost:3000
+```
+
+### 5. Build for Production
+
 ```bash
 npm run build
 ```
 
 ---
 
-## 📁 Directory Structure Overview
+## 🔐 Security and Reliability
 
-```text
-├── public/                  # Static assets
-├── src/
-│   ├── assets/              # Specialist avatars & illustrations
-│   ├── components/
-│   │   ├── admin/           # Centralized administration & registries
-│   │   ├── common/          # Layouts, profile, navigation & modals
-│   │   ├── doctor/          # Dashboard, schedules, EHR & OPD queues
-│   │   └── patient/         # Booking wizard, consultation slips & history
-│   ├── lib/
-│   │   └── firebase.ts      # Cloud database connection setup
-│   ├── services/
-│   │   └── api.ts           # Centralized state controllers and API interfaces
-│   ├── types/
-│   │   └── index.ts         # TypeScript interface schemas
-│   ├── utils/
-│   │   └── pdfGenerator.ts  # Custom jsPDF healthcare slip templates
-│   ├── App.tsx              # Core app router & controller
-│   └── main.tsx             # Application entry point
-├── package.json             # Scripts & library dependencies
-└── README.md                # Project documentation
-```
+MedDesk incorporates security-focused backend functionality, including:
 
----
-
-## 🤝 Contributing
-Contributions are welcome! Feel free to open an Issue or submit a Pull Request to help improve MedDesk.
+- Password hashing using secure crypt
